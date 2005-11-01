@@ -1,0 +1,21 @@
+#compdef unison
+
+_unison () {
+    _arguments \
+	'-batch[No questions]' \
+	"*:profile:_unison_profile"
+}
+
+_unison_profile () {
+    match=()
+    for prof in ~/.unison/*.prf; do
+	match=($match `basename "$prof" .prf`)
+    done
+    compadd "$@" -a match
+}
+
+_unison "$@"
+
+# Local Variables:
+# Mode: sh
+# End:
