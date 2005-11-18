@@ -1,6 +1,34 @@
 ;;; -*-Mode: emacs-lisp; -*-
 
 
+;;; ******************
+;;; Mailcrypt
+;;;
+(require 'mailcrypt-init)
+
+(mc-setversion "gpg")
+(setq mc-gpg-user-id "a.rottmann@gmx.at")
+
+;;(set-keyboard-coding-system 'iso-8859-15)
+
+;;(autoload 'mc-install-write-mode "mailcrypt" nil t)
+;;(autoload 'mc-install-read-mode "mailcrypt" nil t)
+;;(add-hook 'mail-mode-hook 'mc-install-write-mode)
+
+(add-hook 'gnus-summary-mode-hook 'mc-install-read-mode)
+(add-hook 'message-mode-hook 'mc-install-write-mode)
+(add-hook 'news-reply-mode-hook 'mc-install-write-mode)
+
+(defun my-gnus-start-hook ()
+  (let* ((fname (expand-file-name "~/.emacs-mail-crash-box"))
+	 (finfo (file-attributes fname))
+	 (fsize (cond (finfo (nth 7 finfo)) (t -1))))
+    (if (or (= fsize 0) (= fsize 1))
+	(delete-file fname))))
+
+;;(add-hook 'gnus-before-startup-hook 'my-gnus-start-hook)
+
+
 ;;; ********************
 ;;; GNUS
 

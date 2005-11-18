@@ -3,6 +3,12 @@
 defbindings("WFrame", {
   kpress(MOD1.."Next", "WFrame.switch_next(_)"),
   kpress(MOD1.."Prior", "WFrame.switch_prev(_)"),
+
+  bdoc("Show/hide tab"),
+  mpress(MOD1.."Button1", "WFrame.set_tabbar(_, 'toggle')"),
+
+  bdoc("Quickly rename a frame."),
+  mpress(MOD1.."Shift+Button3", "mod_query.query_renameframe(_)"),
 })
 
 defbindings("WIonWS", {
@@ -11,6 +17,7 @@ defbindings("WIonWS", {
     kpress(MOD1.."Right", "WIonWS.goto_dir(_, 'right')"),
     kpress(MOD1.."Left", "WIonWS.goto_dir(_, 'left')"),
 })
+
 
 -- Window matching
 

@@ -249,7 +249,7 @@
 ;(require 'auto-save)
 
 ;; Extend load-path
-(let ((basedir (concat (getenv "HOME") "/share/emacs/lisp")))
+(let ((basedir (concat (getenv "HOME") "/elisp")))
   (setq load-path 
 	(append (list basedir
 		      (concat basedir "/guile"))
@@ -293,7 +293,7 @@
 
 ;;; ********************
 ;;; Quack-el (extended Scheme support)
-(require 'quack)
+;;(require 'quack)
 
 (autoload 'run-scheme "cmuscheme48" "Run an inferior Scheme48 process." t)
 
@@ -332,6 +332,7 @@
 (put 'let-fluid 'scheme-indent-function 2)
 (put 'with-condition-context 'scheme-indent-function 1)
 (put 'with-exception-handler 'scheme-indent-function 1)
+(put 'call-with-append-file 'scheme-indent-function 1)
 
 ;;; ********************
 ;;; cc-mode (the mode you're in when editing C, C++, and Objective C files)
@@ -342,6 +343,37 @@
 
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 (add-hook 'c++-mode-hook 'my-c++-mode-hook)
+
+(defconst visotech-c++-style
+  '((c-basic-offset             . 4)
+    (c-tab-always-indent        . t)
+    (c-comment-only-line-offset . 0)
+    (c-hanging-braces-alist     . ((substatement-open after)
+                                      (brace-list-open)))
+    (c-hanging-colons-alist     . ((member-init-intro before)
+                                   (inher-intro)
+                                   (case-label after)
+                                   (label after)
+                                   (access-label after)))
+    (c-cleanup-list             . (scope-operator
+                                   empty-defun-braces
+                                   defun-close-semi))
+    (c-offsets-alist            . ((arglist-close     . c-lineup-arglist)
+                                   (substatement-open . 0)
+                                   (case-label        . +)
+                                   (access-label      . -)
+                                   (block-open        . 0)
+                                   (inclass           . ++)
+                                   (innamespace       . 0)
+                                   (inextern-lang     . 0)
+                                   (label             . --)
+                                   (inline-open . 0)
+                                   (arglist-intro     . +)))
+    (c-echo-syntactic-information-p . t)
+    )
+  "Visotech C++ Programming Style")
+
+(c-add-style "Visotech" visotech-c++-style)
 
 ;; My identing style
 (defconst my-c++-style
@@ -372,6 +404,7 @@
     (c-echo-syntactic-information-p . t)
     )
   "My C/C++ Programming Style")
+
 
 (c-add-style "PERSONAL" my-c++-style)
 
@@ -458,7 +491,7 @@
 (require 'crypt)
 
 ;; pcomplete support for tla
-(require 'pcmpl-tla)
+;;(require 'pcmpl-tla)
 
 ;;; ****************
 ;;: Dictionary
@@ -469,33 +502,6 @@
 ;;; Mail
 ;;;
 (add-hook 'mail-setup-hook 'mail-abbrevs-setup)
-
-;;; ******************
-;;; Mailcrypt
-;;;
-(require 'mailcrypt-init)
-
-(mc-setversion "gpg")
-(setq mc-gpg-user-id "a.rottmann@gmx.at")
-
-;;(set-keyboard-coding-system 'iso-8859-15)
-
-;;(autoload 'mc-install-write-mode "mailcrypt" nil t)
-;;(autoload 'mc-install-read-mode "mailcrypt" nil t)
-;;(add-hook 'mail-mode-hook 'mc-install-write-mode)
-
-(add-hook 'gnus-summary-mode-hook 'mc-install-read-mode)
-(add-hook 'message-mode-hook 'mc-install-write-mode)
-(add-hook 'news-reply-mode-hook 'mc-install-write-mode)
-
-(defun my-gnus-start-hook ()
-  (let* ((fname (expand-file-name "~/.emacs-mail-crash-box"))
-	 (finfo (file-attributes fname))
-	 (fsize (cond (finfo (nth 7 finfo)) (t -1))))
-    (if (or (= fsize 0) (= fsize 1))
-	(delete-file fname))))
-
-;;(add-hook 'gnus-before-startup-hook 'my-gnus-start-hook)
 
 ;;; ********************
 ;;; Edebug is a source-level debugger for emacs-lisp programs.
@@ -523,26 +529,26 @@
 (require 'bbdb-remind)
 
 ;; Some goodies
-(require 'follow-mouse)
+;;(require 'follow-mouse)
 
 
 ;;
 ;; MMM-Mode
-(require 'mmm-auto)
-(setq mmm-global-mode 'maybe)
+;;(require 'mmm-auto)
+;;(setq mmm-global-mode 'maybe)
 
-(setq my-mason-project-dirs '("/home/andy/uni/vienna/WebServiceEngeneering/src/"))
+;; (setq my-mason-project-dirs '("/home/andy/uni/vienna/WebServiceEngeneering/src/"))
 
 
-(mapc (lambda (dir)
-	(add-to-list 'auto-mode-alist (cons dir 'sgml-mode))
-	(mmm-add-mode-ext-class 'sgml-mode dir 'mason))
-      my-mason-project-dirs)
+;; (mapc (lambda (dir)
+;; 	(add-to-list 'auto-mode-alist (cons dir 'sgml-mode))
+;; 	(mmm-add-mode-ext-class 'sgml-mode dir 'mason))
+;;       my-mason-project-dirs)
 
 ;;
 ;; Emacs Code Browser & Semantic
 ;;
-(add-hook 'semantic-init-hooks 'senator-minor-mode)
+;;(add-hook 'semantic-init-hooks 'senator-minor-mode)
 
 
 ;; Guile Scheme
@@ -584,9 +590,6 @@
 (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
 (setq doxymacs-use-external-xml-parser t)
 
-;; gtk-doc
-(load "gtk-doc")
-
 ;; Diary
 (add-hook 'diary-display-hook 'fancy-diary-display)
 (add-hook 'list-diary-entries-hook 'sort-diary-entries)
@@ -598,7 +601,7 @@
 (load "emacs-wiki-config")
 
 ;; Planner
-(load "planner-config")
+;;(load "planner-config")
 
 ;; Supercite
 ;(autoload 'sc-cite-original     "supercite" "Supercite 3.1" t)
