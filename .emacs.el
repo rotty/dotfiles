@@ -1,17 +1,5 @@
 ;; -*- Mode: Emacs-Lisp -*-
 
-;;; This is a sample .emacs file.
-;;;
-;;; The .emacs file, which should reside in your home directory, allows you to
-;;; customize the behavior of Emacs.  In general, changes to your .emacs file
-;;; will not take effect until the next time you start up Emacs.  You can load
-;;; it explicitly with `M-x load-file RET ~/.emacs RET'.
-;;;
-;;; There is a great deal of documentation on customization in the Emacs
-;;; manual.  You can read this manual with the online Info browser: type
-;;; `C-h i' or select "Emacs Info" from the "Help" menu.
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;			Basic Customization			    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -20,13 +8,6 @@
 ;; command, but possibly confusing to a new user, so it's disabled by
 ;; default.
 (put 'narrow-to-region 'disabled nil)
-
-;;; Define a variable to indicate whether we're running XEmacs/Lucid Emacs.
-;;; (You do not have to defvar a global variable before using it --
-;;; you can just call `setq' directly like we do for `emacs-major-version'
-;;; below.  It's clearer this way, though.)
-
-(defvar running-xemacs (string-match "XEmacs\\|Lucid" emacs-version))
 
 ;; set up the function keys to do common tasks to reduce Emacs pinky
 ;; and such.
@@ -78,56 +59,6 @@
 ;; (setq delete-key-deletes-forward t)
 
 
-;;; Older versions of emacs did not have these variables
-;;; (emacs-major-version and emacs-minor-version.)
-;;; Let's define them if they're not around, since they make
-;;; it much easier to conditionalize on the emacs version.
-
-(if (and (not (boundp 'emacs-major-version))
-	 (string-match "^[0-9]+" emacs-version))
-    (setq emacs-major-version
-	  (string-to-int (substring emacs-version
-				    (match-beginning 0) (match-end 0)))))
-(if (and (not (boundp 'emacs-minor-version))
-	 (string-match "^[0-9]+\\.\\([0-9]+\\)" emacs-version))
-    (setq emacs-minor-version
-	  (string-to-int (substring emacs-version
-				    (match-beginning 1) (match-end 1)))))
-
-;;; Define a function to make it easier to check which version we're
-;;; running.
-
-(defun running-emacs-version-or-newer (major minor)
-  (or (> emacs-major-version major)
-      (and (= emacs-major-version major)
-	   (>= emacs-minor-version minor))))
-
-(cond ((and running-xemacs
-	    (running-emacs-version-or-newer 19 6))
-       ;;
-       ;; Code requiring XEmacs/Lucid Emacs version 19.6 or newer goes here
-       ;;
-       ))
-
-(cond ((>= emacs-major-version 19)
-       ;;
-       ;; Code for any vintage-19 emacs goes here
-       ;;
-       ))
-
-(cond ((and (not running-xemacs)
-	    (>= emacs-major-version 19))
-       ;;
-       ;; Code specific to FSF Emacs 19 (not XEmacs/Lucid Emacs) goes here
-       ;;
-       ))
-
-(cond ((< emacs-major-version 19)
-       ;;
-       ;; Code specific to emacs 18 goes here
-       ;;
-       ))
-
 (require 'tramp)
 (eval-after-load "ange-ftp"
   '(tramp-disable-ange-ftp))
@@ -158,7 +89,7 @@
 (custom-set-variables
   ;; custom-set-variables was added by Custom -- don't edit or cut/paste it!
   ;; Your init file should contain only one such instance.
- '(add-log-mailing-address nil)
+ '(add-log-mailing-address nil t)
  '(bbdb-north-american-phone-numbers-p nil)
  '(browse-url-browser-function (quote w3m-browse-url))
  '(browse-url-galeon-arguments (quote ("-n")))
@@ -195,7 +126,7 @@
  '(paren-mode (quote paren) nil (paren))
  '(quack-global-menu-p nil)
  '(quack-pltish-keywords-to-fontify (quote ("and" "begin" "call-with-current-continuation" "call-with-input-file" "call-with-output-file" "call/cc" "case" "case-lambda" "compound-unit/sig" "cond" "condition" "cond-expand" "define" "define*" "define-condition-type" "define-macro" "define-module" "define-public" "define-signature" "define-syntax" "define-syntax-set" "define-values" "define-values/invoke-unit/sig" "define-method" "define-generic" "define-class" "delay" "do" "else" "exit-handler" "guard" "if" "import" "lambda" "let" "let*" "let*-values" "let+" "let-keywords" "let-optional" "let-syntax" "let-values" "let/ec" "letrec" "letrec-values" "letrec-syntax" "match-lambda" "match-lambda*" "match-let" "match-let*" "match-letrec" "match-define" "mixin" "opt-lambda" "or" "override" "override*" "namespace-variable-bind/invoke-unit/sig" "parameterize" "private" "private*" "protect" "provide" "provide-signature-elements" "provide/contract" "public" "public*" "quote" "receive" "rename" "require" "require-for-syntax" "send" "send*" "setter" "set!" "set!-values" "signature->symbols" "super-instantiate" "syntax-case" "syntax-case*" "syntax-error" "syntax-rules" "unit/sig" "unless" "when" "with-handlers" "with-method" "with-syntax")))
- '(quack-programs (quote ("~/src/contrib/scheme48/svn-gw/netapi/go" "ischeme48" "scheme48 -h 100000000" "bigloo" "csi" "csi -hygienic" "gosh" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kali" "kawa" "mit-scheme" "mred -z" "mzscheme" "mzscheme -M errortrace" "rs" "scheme" "scheme48" "scheme48 -cl ~/src/contrib/scheme48/src/scheme48/scheme/ffi/packages.scm -cl ~/src/contrib/g-wrap/=build/scheme48/g-wrap/gw/packages.scm -o g-wrap.gw.standard" "scheme48 -cl ~/src/contrib/scheme48/src/scheme48/scheme/ffi/packages.scm -o ffi" "scheme48 -cl ~/src/foreign/sunterlib-0.7/s48/exceptions/packages.scm -cl ~/src/contrib/tiny-clos/packages.scm -o tiny-goops -o tiny-test" "scheme48 -cl ~/src/foreign/sunterlib-0.7/s48/exceptions/packages.scm -cl ~/src/contrib/tiny-clos/src/packages.scm -o tiny-goops" "scheme48 -cl ~/src/foreign/sunterlib-0.7/s48/exceptions/packages.scm -cl ~/src/contrib/tiny-clos/src/packages.scm -o tiny-goops -o tiny-test" "scheme48 -h 10000000" "scheme48vm" "scsh" "sisc" "stklos" "sxi")))
+ '(quack-programs (quote ("~/src/contrib/s42/light-scheme42" "bigloo" "csi" "csi -hygienic" "gosh" "gsi" "gsi ~~/syntax-case.scm -" "guile" "ischeme48" "kali" "kawa" "mit-scheme" "mred -z" "mzscheme" "mzscheme -M errortrace" "rs" "schem348" "schem48" "scheme" "scheme48" "scheme48 -cl ~/src/contrib/scheme48/src/scheme48/scheme/ffi/packages.scm -cl ~/src/contrib/g-wrap/=build/scheme48/g-wrap/gw/packages.scm -o g-wrap.gw.standard" "scheme48 -cl ~/src/contrib/scheme48/src/scheme48/scheme/ffi/packages.scm -o ffi" "scheme48 -cl ~/src/foreign/sunterlib-0.7/s48/exceptions/packages.scm -cl ~/src/contrib/tiny-clos/packages.scm -o tiny-goops -o tiny-test" "scheme48 -cl ~/src/foreign/sunterlib-0.7/s48/exceptions/packages.scm -cl ~/src/contrib/tiny-clos/src/packages.scm -o tiny-goops" "scheme48 -cl ~/src/foreign/sunterlib-0.7/s48/exceptions/packages.scm -cl ~/src/contrib/tiny-clos/src/packages.scm -o tiny-goops -o tiny-test" "scheme48 -h 10000000" "scheme48 -h 100000000" "scheme48vm" "scsh" "sisc" "stklos" "sxi" "~/src/contrib/s42/heavy-scheme42" "~/src/contrib/s42/run" "~/src/contrib/s42/run-scheme42" "~/src/contrib/scheme48/svn-gw/netapi/go")))
  '(quack-remap-find-file-bindings-p nil)
  '(sh-basic-offset 2)
  '(show-paren-delay 0)
@@ -222,16 +153,6 @@
 (require 'dired)
 
 ;;; ********************
-;;; Load the default-dir.el package which installs fancy handling
-;;;  of the initial contents in the minibuffer when reading
-;;; file names.
-
-(if (and running-xemacs
-	 (or (and (= emacs-major-version 20) (>= emacs-minor-version 1))
-	     (and (= emacs-major-version 19) (>= emacs-minor-version 15))))
-    (require 'default-dir))
-
-;;; ********************
 ;;; Load the auto-save.el package, which lets you put all of your autosave
 ;;; files in one place, instead of scattering them around the file system.
 ;;;
@@ -252,7 +173,7 @@
 (let ((basedir (concat (getenv "HOME") "/elisp")))
   (setq load-path 
 	(append (list basedir
-		      (concat basedir "/guile"))
+		      (concat basedir "/slime"))
 		load-path)))
 
 ;; This adds additional extensions
@@ -293,9 +214,27 @@
 
 ;;; ********************
 ;;; Quack-el (extended Scheme support)
-;;(require 'quack)
+(require 'quack)
 
 (autoload 'run-scheme "cmuscheme48" "Run an inferior Scheme48 process." t)
+
+;; Slime
+(eval-after-load "slime"
+  '(progn
+     (setq scheme48-program-name "~/src/contrib/s42/light-scheme42")
+     (load "~/src/foreign/slime48/slime48")))
+(require 'slime)
+
+(add-hook 'scheme-mode-hook (lambda () (slime-mode t)))
+(add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
+
+;; paredit.el
+(autoload 'enable-paredit-mode "paredit"
+  "Turns on pseudo-structural editing of Lisp code."
+  t)
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+(add-hook 'lisp-mode-hook 'enable-paredit-mode)
+(add-hook 'scheme-mode-hook 'enable-paredit-mode)
 
 ;; test-suite/lib.scm test-case indenting
 (put 'with-test-prefix 'scheme-indent-function 1)
@@ -306,6 +245,8 @@
 (put 'make-method 'scheme-indent-function 1)
 (put 'add-method! 'scheme-indent-function 'defun)
 (put 'let-slots 'scheme-indent-function 2)
+(put 'let-optionals 'scheme-indent-function 2)
+(put 'let-optionals* 'scheme-indent-function 2)
 (put 'eval-when 'scheme-indent-function 1)
 (put 'with-mutex 'scheme-indent-function 1)
 (put 'with-fluids 'scheme-indent-function 1)
@@ -333,6 +274,7 @@
 (put 'with-condition-context 'scheme-indent-function 1)
 (put 'with-exception-handler 'scheme-indent-function 1)
 (put 'call-with-append-file 'scheme-indent-function 1)
+(put 'with-new-proposal 'scheme-indent-function 1)
 
 ;;; ********************
 ;;; cc-mode (the mode you're in when editing C, C++, and Objective C files)
@@ -609,17 +551,8 @@
 
 ;(add-hook 'mail-citation-hook 'sc-cite-original)
 
-;; Yacas
-(autoload 'yacas "yacas" "Running Yacas" t)
-
 ;; ITLA
 (autoload 'itla "itla" "Run itla." t)
-
-;; paredit.el
-(autoload 'enable-paredit-mode "paredit"
-  "Turns on pseudo-structural editing of Lisp code."
-  t)
-(add-hook 'scheme-mode-hook 'enable-paredit-mode)
 
 ;;
 ;; gpg.el from Oort Gnus
@@ -632,104 +565,23 @@
 ;; Your default key for signing emails.
 (setq gpg-default-key-id "01FD5B62")
 
-;; Tiny Tools
-;(pushnew "~/elisp/tiny" load-path :test 'string=)
-;(load "tinypath.el")
-
 (defun irc ()
   (interactive)
-  (erc-select :server "irc.freenode.net" :nick "rotty"))
-  ;;(erc-select :server "irc.oftc.net" :nick "rotty")
-  ;;(erc-select :server "irc.gimp.org" :nick "rotty"))
+  (erc-select :server "irc.freenode.net" :nick "rotty")
+  (erc-select :server "irc.oftc.net" :nick "rotty")
+  (erc-select :server "irc.gimp.org" :nick "rotty"))
 
 
 
-;;
-;; w3m-el proxy setting
-;;
-;(eval-after-load "w3m"
-;  '(setq w3m-command-arguments
-;	 (nconc w3m-command-arguments
-;		'("-o" "http_proxy=http://garibaldi.rhinosaur.lan:3128/"))))
-
-
 (put 'upcase-region 'disabled nil)
-
 (put 'downcase-region 'disabled nil)
 
 ;; Use UTF-8 for file name encoding
 (setq file-name-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-
-;; Some utilities
-
-(defun devhelp-word-at-point ()
-  "runs devhelp"
-  (interactive)
-  (start-process-shell-command "devhelp" nil "devhelp" "-s" (current-word))
-  )
-
-; Example: bind F7 to start devhelp and search for the word at the point.
-(global-set-key [f7] 'devhelp-word-at-point)
-
+;; Misc helpful functions
 (load "util-funcs")
-
-
-;; Update copyright
-
-(defconst current-year (substring (current-time-string) -4)
-  "String representing the current year.")
-(defconst last-year (int-to-string (- (string-to-int current-year) 1))
-  "String representing the current year (presuming that the current year is not 1 AD, which hopefully will continue to be the case indefinitely).")
-(defvar current-gpl-version "2"
-  "String representing the current version of the GPL.")
-(defvar copyright-regex "[Cc]opyright\\s *\\(([Cc])\\)?\\(\\s *[0-9]+\\s *\\(-\\s *[0-9]+\\s *\\)?,\\s *\\)*\\s *\\(\\([0-9]+\\)\\s *-\\)?\\s *\\([0-9]+\\)"
-  "Regular expression to match common copyright declarations, extracting the final year(s).")
-;; Note: paren expr. #5 is the first year of the last dashed pair, if
-;; any; paren expr. #6 is the last year.
-
-(defun update-copyright-with-queries ()
-  "My version of update-copyright."
-  (save-excursion
-    (save-restriction
-      (widen)
-      (goto-char (point-min))
-      (and (re-search-forward "[i]s free software"
-                              nil t)
-           (not (eq major-mode 'rmail-mode))
-           (let ((limit (point)))
-             (goto-char (point-min))
-             (re-search-forward copyright-regex
-              limit t))
-    (let ((final-year (match-string 6))
-   (final-range-start (match-string 5)))
-      (when (and (not (string= final-year current-year))
-   (progn (goto-char (point-min))
-          (sit-for 0)
-          (y-or-n-p (format "Update copyright (last %s)? " final-year))))
-        (if (string= final-year last-year)
-     (if final-range-start
-         (progn
-    (goto-char (match-end 6))
-    (delete-region (match-beginning 6) (match-end 6))
-    (insert current-year))
-       (progn
-         (goto-char (match-end 6))
-         (insert "-")
-         (insert current-year)))
-   (progn
-     (goto-char (match-end 6))
-     (insert ", ")
-     (insert current-year))) t))
-    (message "Copyright updated to include %s." current-year)
-    (if (re-search-forward 
-  "; either version \\(.+\\), or (at your option)"
-  nil t)
-        (progn
-   (goto-char (match-beginning 1))
-   (delete-region (point) (match-end 1))
-   (insert current-gpl-version)))))))
 
 (setq write-file-hooks (cons 'update-copyright-with-queries write-file-hooks))
 
