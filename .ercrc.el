@@ -1,8 +1,16 @@
+(defun read-erc-passwords ()
+  (save-excursion
+    (let ((buffer (find-file-noselect "~/.erc-passwords")))
+      (set-buffer buffer)
+      (goto-char (point-min))
+      (read buffer))))
+
 (add-hook 'erc-after-connect
     	  '(lambda (server nick)
-    	     (cond
-    	      ((string-match "freenode\\.net" server)
-    	       (erc-message "PRIVMSG" "NickServ identify TraggAv7")))))
+    	     (dolist (entry (read-erc-passwords))
+	       (cond ((string-match (car entry) server)
+		      (erc-message "PRIVMSG" (concat "NickServ identify "
+						     (cadr entry))))))))
 
 (require 'erc-autojoin)
 (erc-autojoin-mode nil)
