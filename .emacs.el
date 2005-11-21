@@ -223,7 +223,9 @@
   '(progn
      (setq scheme48-program-name "~/src/contrib/s42/light-scheme42")
      (load "~/src/foreign/slime48/slime48")))
-(require 'slime)
+
+(autoload 'slime-mode "slime" "Activate slime-mode" t)
+(autoload 'slime "slime" "Activate slime-mode" t)
 
 (add-hook 'scheme-mode-hook (lambda () (slime-mode t)))
 (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
@@ -315,7 +317,7 @@
     )
   "Visotech C++ Programming Style")
 
-(c-add-style "Visotech" visotech-c++-style)
+(c-add-style "visotech" visotech-c++-style)
 
 ;; My identing style
 (defconst my-c++-style
@@ -348,7 +350,7 @@
   "My C/C++ Programming Style")
 
 
-(c-add-style "PERSONAL" my-c++-style)
+(c-add-style "personal" my-c++-style)
 
 (defun my-c++-mode-hook ()
   ;; Add personal style and set it for the current buffer
@@ -514,10 +516,8 @@
 ;; emacs-goodies-el
 ;;
 
-
 ;; dirvars
 (require 'dirvars)
-(defvar enable-dirvar-variables t) ; Workaround bug
 
 ;; projects (nicer buffer names)
 (require 'projects)

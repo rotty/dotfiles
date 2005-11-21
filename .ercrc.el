@@ -40,7 +40,6 @@
 
 (erc-autojoin
     (("irc.freenode.net") 
-     "#debian-devel" "#scheme" "#guile" "#conjure" 
-     "#scsh" "#ideologies")
+     "#scheme" "#guile" "#conjure" "#scsh" "#ideologies")
     (("irc.gnome.org") "#gtk+")
-    (("irc.oftc.net") "#debian-devel"))
+    (("irc.oftc.net") "#debian-devel" "#debian.or.at"))
