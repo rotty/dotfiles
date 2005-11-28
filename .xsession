@@ -16,7 +16,7 @@ fi
 ssh-add
 
 xset b off
-nvidia-settings --load-config-only
+. ~/.xsession-local
 trayer &
 emacs -name "main" -eval "(setq gnuserv-kill-quietly t)" -f gnuserv-start &
 emacs -name "erc" -f irc &
