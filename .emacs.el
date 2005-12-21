@@ -4,60 +4,30 @@
 ;;			Basic Customization			    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Enable the command `narrow-to-region' ("C-x n n"), a useful
-;; command, but possibly confusing to a new user, so it's disabled by
-;; default.
 (put 'narrow-to-region 'disabled nil)
-
-;; set up the function keys to do common tasks to reduce Emacs pinky
-;; and such.
 
 ;; Not bound anymore by default?
 (global-set-key [home] 'beginning-of-line)
 (global-set-key [end] 'end-of-line)
 
-;; Make F1 invoke help
-(global-set-key [f1] 'help-command)
-;; Make F2 be `undo'
-(global-set-key [f2] 'undo)
-;; Make F3 be `find-file'
-;; Note: it does not currently work to say
-;;   (global-set-key 'f3 "\C-x\C-f")
-;; The reason is that macros can't do interactive things properly.
-;; This is an extremely longstanding bug in Emacs.  Eventually,
-;; it will be fixed. (Hopefully ..)
-;;(global-set-key [f3] 'find-file)
+;;
+;; http://opal.cabochon.com/~stevey/blog-rants/effective-emacs.html
 
-;; Make F4 be "mark", F5 be "copy", F6 be "paste"
-;; Note that you can set a key sequence either to a command or to another
-;; key sequence.
-(global-set-key [f4] 'set-mark-command)
-(global-set-key [f5] "\M-w")
-(global-set-key [f6] "\C-y")
+(global-set-key "\C-w"     'backward-kill-word)
+(global-set-key "\C-x\C-k" 'kill-region)
+(global-set-key "\C-c\C-k" 'kill-region)
+(global-set-key "\C-x\C-m" 'execute-extended-command)
+(global-set-key "\C-c\C-m" 'execute-extended-command)
 
-;; Shift-F4 is "pop mark off of stack"
-(global-set-key [(shift f4)] (lambda () (interactive) (set-mark-command t)))
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 
-;; Make F7 be `save-buffer'
-(global-set-key [f7] 'save-buffer)
-
-;; Make F8 be "start macro", F9 be "end macro", F10 be "execute macro"
-(global-set-key [f8] 'start-kbd-macro)
-(global-set-key [f9] 'end-kbd-macro)
-(global-set-key [f10] 'hs-hide-block)
-(global-set-key [(shift f10)] 'hs-show-block)
-
+(global-set-key [f5]  'call-last-kbd-macro)
 (global-set-key [f11] 'goto-line)
 (global-set-key [f12] 'toggle-transient-mark-mode)
 
-;; Here's an alternative binding if you don't use keyboard macros:
-;; Make F8 be `save-buffer' followed by `delete-window'.
-;;(global-set-key 'f8 "\C-x\C-s\C-x0")
-
-;; If you prefer delete to actually delete forward then you want to
-;; uncomment the next line (or use `Customize' to customize this).
-;; (setq delete-key-deletes-forward t)
-
+(setq iswitchb-mode t)
 
 (require 'tramp)
 (eval-after-load "ange-ftp"
