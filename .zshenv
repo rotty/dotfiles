@@ -25,7 +25,6 @@ ld_library_path=(~/.system/lib $ld_library_path)
 #ltdl_library_path=(~/.system/lib $ltdl_library_path)
 guile_load_path=(~/.system/share/guile/site ~/.system/share/guile /usr/local/share/guile/site $guile_load_path)
 pkg_config_path=(~/.system/lib/pkgconfig $pkg_config_path /usr/local/lib/pkgconfig)
-serveez_load_path=(~/.system/share/serveez $serveez_load_path)
 
 export ACLOCAL_FLAGS="-I /usr/local/share/aclocal $ACLOCAL_FLAGS"
 export SCSH_LIB_DIRS=\"$HOME'/.system/lib/scsh/0.6" '$SCSH_LIB_DIRS
@@ -33,16 +32,15 @@ export CHICKEN_REPOSITORY="$HOME/.system/lib/chicken"
 
 # Preferences
 
-export BROWSER="galeon -n"
+export BROWSER="firefox -n"
 export PAGER=less
-export EDITOR=e3em
+export EDITOR=zile
 export CVS_RSH=ssh
 export CCACHE_UNIFY=yes
 export LANG=C
 if [ -f /etc/locale.gen ] && grep -q de_AT.UTF-8 /etc/locale.gen; then
   export LC_CTYPE=de_AT.UTF-8
 fi
-#export GNC_GUILE=/usr/bin/guile1.4
 export PYTHONSTARTUP="$HOME/.pythonrc"
 export PYTHONDOCS="/usr/share/doc/python2.2-doc/html"
 
