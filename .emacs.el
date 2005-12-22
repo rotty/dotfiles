@@ -24,6 +24,7 @@
 (global-set-key [f12] 'toggle-transient-mark-mode)
 
 (setq iswitchb-mode t)
+(setq global-font-lock-mode t)
 
 (require 'tramp)
 (eval-after-load "ange-ftp"
@@ -51,11 +52,11 @@
 (require 'dired)
 
 ;; Extend load-path
-(push (expand-file-name "~/elisp") load-path)
+(push (expand-file-name "~/.emacs.d/lisp") load-path)
 
 
 (dolist (snippet '("scheme"))
-  (load (expand-file-name (concat"~/.emacs.d/" snippet ".el"))))
+  (load (expand-file-name (concat"~/.emacs.d/config/" snippet ".el"))))
 
 ;; This adds additional extensions
 (setq auto-mode-alist
