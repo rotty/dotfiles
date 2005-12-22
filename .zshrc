@@ -26,7 +26,7 @@ alias cfind='find -type f  -a \( -name "*.c" -o -name "*.cpp" \
                                  -o -name "*.cc" -o -name "*.cxx" \) | \
              xargs grep '
 alias hfind='find -type f  -a \( -name "*.h" -o -name "*.hh" \
-                                 -o -name "*.H" -o -name "*.hxx" \) | \
+                                 -o -name "*.H" -o -name "*.hxx" -o -name "*.hpp" \) | \
              xargs grep '
 alias lispfind='find -type f -a -name "*.lisp" | xargs grep '
 alias jfind='find -type f -a -name "*.java" -print0 | xargs -0 grep '
