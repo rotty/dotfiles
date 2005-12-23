@@ -3,18 +3,6 @@
 
 (autoload 'run-scheme "cmuscheme48" "Run an inferior Scheme48 process." t)
 
-;; Slime
-(eval-after-load "slime"
-  '(progn
-     (setq scheme48-program-name "~/src/contrib/s42/light-scheme42")
-     (load "~/src/foreign/slime48/slime48")))
-
-(autoload 'slime-mode "slime" "Activate slime-mode" t)
-(autoload 'slime "slime" "Activate slime-mode" t)
-
-;; (add-hook 'scheme-mode-hook (lambda () (slime-mode t)))
-;; (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
-
 ;; paredit.el
 (autoload 'enable-paredit-mode "paredit"
   "Turns on pseudo-structural editing of Lisp code."

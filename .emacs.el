@@ -23,39 +23,25 @@
 (global-set-key [f11] 'goto-line)
 (global-set-key [f12] 'toggle-transient-mark-mode)
 
-(setq iswitchb-mode t)
-(setq global-font-lock-mode t)
+(iswitchb-mode t)
+(global-font-lock-mode t)
 
 (require 'tramp)
 (eval-after-load "ange-ftp"
   '(tramp-disable-ange-ftp))
 
 
-;; Support for running the Emacs in /usr/local/
-;;
-(eval-when-compile (require 'cl))	;case, push
-
-(when (and (file-exists-p "/usr/share/emacs/site-lisp/debian-startup.el")
-           (not (boundp 'debian-emacs-flavor))
-           (= emacs-major-version 21)
-	   (not (featurep 'xemacs)))
-  ;; Pretend we're installed in the normal place.
-  (pushnew "/usr/share/emacs/site-lisp" load-path :test #'equal)
-  (pushnew "/usr/local/share/emacs/site-lisp" load-path :test #'equal)
-
-  ;; Call the normal startup sequence.
-  (defconst debian-emacs-flavor 'emacs21)
-  (load "/usr/share/emacs/site-lisp/debian-startup.el")
-  (debian-startup debian-emacs-flavor))
-
 
 (require 'dired)
 
 ;; Extend load-path
-(push (expand-file-name "~/.emacs.d/lisp") load-path)
+(let ((top (expand-file-name "~/.emacs.d/lisp")))
+  (add-to-list 'load-path top)
+  (dolist (f (directory-files top t))
+    (cond ((file-directory-p f)
+	   (add-to-list 'load-path f)))))
 
-
-(dolist (snippet '("scheme"))
+(dolist (snippet '("scheme" "cplus" "slime48"))
   (load (expand-file-name (concat"~/.emacs.d/config/" snippet ".el"))))
 
 ;; This adds additional extensions
