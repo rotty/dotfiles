@@ -34,6 +34,7 @@
 
 ;; The next bunch of declarations is for not CCing me myself
 
+(require 'bbdb-com)
 (defvar my-mail-addresses (bbdb-record-net 
 			   (car (bbdb-search (bbdb-records) 
 					     "Andreas Rottmann"))))
@@ -172,7 +173,7 @@
 	"To iterate is human; to recurse, divine."
 	"I have a truly elegant proof of the  above, but it is too long to\nfit into this .signature file."
 	"Life is a sexually transmitted disease."
-	"Software Patents: Where do you want to stifle inovation today?"
+	"Software Patents: Where do you want to stifle innovation today?"
 	"Always be wary of the Software Engineer who carries a screwdriver.\n  -- Robert Paul"
 	"Could Jesus microwave a burrito so hot that he himself couldn't eat it? - Homer S."))
 
