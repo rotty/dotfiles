@@ -15,7 +15,8 @@
   '(progn
      (slime-setup)
      (setq slime-lisp-implementations
-	   `((s48 ("scheme48") :init slime48-init-command)
+	   `((s42 ("scheme42") :init slime48-init-command)
+	     (s48 ("scheme48") :init slime48-init-command)
 	     ,@slime-lisp-implementations))))
 
 (autoload 'slime48-init-command "slime48"
@@ -31,4 +32,4 @@
 	     (lambda ()
 	       (if (and (boundp 'scheme48-package)
 			scheme48-package)
-		   (setq slime-buffer-package scheme48-package)))))
+		   (setq slime-buffer-package (symbol-name scheme48-package))))))
