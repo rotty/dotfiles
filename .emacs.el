@@ -44,7 +44,6 @@
 ;; the way of modularizing your emacs configuation, IMHO
 (setq custom-file nil)
 
-
 (add-hook 'mail-setup-hook 'mail-abbrevs-setup)
 (define-key emacs-lisp-mode-map "\C-xx" 'edebug-defun)
 
@@ -55,5 +54,5 @@
     (cond ((file-directory-p f)
 	   (add-to-list 'load-path f)))))
 
-(dolist (snippet '("scheme" "cplus" "slime48" "tramp" "crypt" "bbdb" "irc" "goodies" "python"))
+(dolist (snippet '("scheme" "cplus" "slime48" "tramp" "crypt" "irc"))
   (load (expand-file-name (concat"~/.emacs.d/config/" snippet ".el"))))

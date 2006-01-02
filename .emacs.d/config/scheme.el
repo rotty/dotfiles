@@ -39,6 +39,7 @@
 	   (with-lock 1)
 	   (with-module 1)
 	   (with-current-directory 1)
+	   (open-tcp-listener-accept-loop 1)
 	   (call-with-file-and-dir 1)
 	   (call-with-file-dumpster 2)
 	   (call-with-file-retriever 2)
