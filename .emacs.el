@@ -55,5 +55,5 @@
     (cond ((file-directory-p f)
 	   (add-to-list 'load-path f)))))
 
-(dolist (snippet '("scheme" "cplus" "slime48" "tramp" "crypt" "irc"))
+(dolist (snippet '("scheme" "cplus" "slime48" "tramp" "crypt" "bbdb" "irc" "goodies" "python"))
   (load (expand-file-name (concat"~/.emacs.d/config/" snippet ".el"))))
