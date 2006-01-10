@@ -32,4 +32,8 @@
 	     (lambda ()
 	       (if (and (boundp 'scheme48-package)
 			scheme48-package)
-		   (setq slime-buffer-package (symbol-name scheme48-package))))))
+		   (setq slime-buffer-package
+			 (cond ((symbolp scheme48-package)
+				(symbol-name scheme48-package))
+			       (t
+				scheme48-package)))))))
