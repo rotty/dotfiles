@@ -42,7 +42,9 @@
 
 (setq european-calender-style t)
 (setq diary-file "~/.diary.planner")
+
 (setq custom-file "~/.emacs.d/.customized")
+(load-file (expand-file-name custom-file))
 
 (add-hook 'mail-setup-hook 'mail-abbrevs-setup)
 (define-key emacs-lisp-mode-map "\C-xx" 'edebug-defun)
@@ -55,5 +57,5 @@
 	   (add-to-list 'load-path f)))))
 
 (dolist (snippet '("scheme" "cplus" "slime48" "tramp" "crypt" "bbdb" "irc" "goodies"
-		   "python" "emacs-wiki" "css-mode"))
-  (load-file (expand-file-name (concat"~/.emacs.d/config/" snippet ".el"))))
+		   "python" "emacs-wiki" "css-mode" "rst-mode" "muse"))
+  (load-file (expand-file-name (concat "~/.emacs.d/config/" snippet ".el"))))

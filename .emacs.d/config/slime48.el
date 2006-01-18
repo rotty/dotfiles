@@ -11,6 +11,9 @@
   "SLIME: The Superior Lisp Interaction Mode for Emacs (minor-mode)."
   t)
 
+;; The animation is annoying after some time
+(setq slime-startup-animation nil)
+
 (eval-after-load "slime"
   '(progn
      (slime-setup)

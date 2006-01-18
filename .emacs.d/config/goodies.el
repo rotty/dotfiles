@@ -20,3 +20,5 @@
 (load "util-funcs")
 
 (setq write-file-hooks (cons 'update-copyright-with-queries write-file-hooks))
+
+(setq darcsum-diff-switches "-u")

@@ -55,6 +55,7 @@
 	   (with-condition-context 1)
 	   (with-exception-handler 1)
 	   (call-with-append-file 1)
+	   (call-with-current-noise-port 1)
 	   (call-with-process-output 1)
 	   (with-new-proposal 1)
 	   (with-cwd 1)

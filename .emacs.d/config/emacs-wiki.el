@@ -57,13 +57,6 @@
          ;;(emacs-wiki-publishing-footer . "<lisp>(insert-file \"~/src/contrib/g-wrap/+wiki/.footer\")</lisp>")
 	 )
 
-	("distwork"
-	 (emacs-wiki-publishing-directory . "~/src/own/distwork/www")
-	 (emacs-wiki-directories "~/wiki/distwork")
-	 (emacs-wiki-publishing-header . "<lisp>(insert-file \"~/wiki/distwork/.header\")</lisp>")
-         (emacs-wiki-publishing-footer . "<lisp>(insert-file \"~/wiki/distwork/.footer\")</lisp>")
-	 )
-	 
 	("g-wrap"
 	 (emacs-wiki-publishing-directory . "~/src/contrib/g-wrap/+www")
 	 (emacs-wiki-directories "~/src/contrib/g-wrap/+wiki")
@@ -76,23 +69,7 @@
 	 (emacs-wiki-directories "~/src/contrib/guile-lib/+wiki")
 	 (emacs-wiki-publishing-header . "<lisp>(insert-file \"~/src/contrib/guile-lib/+wiki/.header\")</lisp>")
          (emacs-wiki-publishing-footer . "<lisp>(insert-file \"~/src/contrib/guile-lib/+wiki/.footer\")</lisp>")
-	 )
-	
-	
-	("goio"
-	 (emacs-wiki-publishing-directory . "~/src/contrib/goio/+www")
-	 (emacs-wiki-directories "~/src/contrib/goio/+wiki")
-	 (emacs-wiki-publishing-header . "<lisp>(insert-file \"~/src/contrib/goio/+wiki/.header\")</lisp>")
-         (emacs-wiki-publishing-footer . "<lisp>(insert-file \"~/src/contrib/goio/+wiki/.footer\")</lisp>")
-	 )
-	
-	("spells"
-	 (emacs-wiki-publishing-directory . "~/src/contrib/spells/+www")
-	 (emacs-wiki-directories "~/src/contrib/spells/+wiki")
-	 (emacs-wiki-publishing-header . "<lisp>(insert-file \"~/src/contrib/spells/+wiki/.header\")</lisp>")
-         (emacs-wiki-publishing-footer . "<lisp>(insert-file \"~/src/contrib/spells/+wiki/.footer\")</lisp>")
-	 )	
-	))
+	 )))
 
 
 (setq emacs-wiki-charset-default "utf-8")
