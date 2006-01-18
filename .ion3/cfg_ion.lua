@@ -51,7 +51,7 @@ dopath("mod_statusbar")
 dopath("mod_sp")
 
 -- Some scripts
-dopath("min_tabs")
+-- dopath("min_tabs")
 
 -- Load some kludges to make apps behave better.
 dopath("cfg_kludges")
