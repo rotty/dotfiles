@@ -26,11 +26,10 @@
     (if (or (= fsize 0) (= fsize 1))
 	(delete-file fname))))
 
+
 ;;(add-hook 'gnus-before-startup-hook 'my-gnus-start-hook)
 
-
-;;; ********************
-;;; GNUS
+(setq mail-sources '((file :path "/var/spool/mail/rotty")))
 
 ;; The next bunch of declarations is for not CCing me myself
 
@@ -99,14 +98,25 @@
       '(gnus-find-subscribed-addresses))
 
 ;; Gnus methods
-(setq gnus-select-method '(nntp "news"))
-(setq gnus-secondary-select-methods
-      '((nnimap "mail"
-		(nnimap-stream ssl))))
+;;(setq gnus-select-method '(nntp "news")
+(setq gnus-secondary-select-methods '((nnml "")))
 
-;; How to archive messages
-(setq gnus-message-archive-group "INBOX.Sent")
-(setq gnus-message-archive-method '(nnimap "mail"))
+(defun fancy-split-spamassassin ()
+   (save-excursion
+     (set-buffer " *nnmail incoming*")
+     (call-process-region (point-min) (point-max) "spamc" t t nil "-f")
+     (goto-char (point-min))
+     (when (re-search-forward "^x-spam-flag: yes$" nil t))))
+
+(setq nnmail-split-methods 'nnmail-split-fancy)
+(setq nnmail-split-fancy
+      '(| (: spam-split)
+	  (: fancy-split-spamassassin)
+	  ("list-id" "chicken-users\\.nongnu\\.org" "scheme.chicken")
+	  ("list-id" "debian-devel\\.lists.debian.org" "debian-devel")
+	  ("list-id" "debian-mentors\\.lists\\.debian.org" "debian-mentors")
+	  ("list-id" "debian-release\\.lists\\.debian.org" "debian-release")
+	  "mail.misc"))
 
 ;; Change default expiry wait time for some groups
 (setq nnmail-expiry-wait-function
@@ -122,18 +132,12 @@
 
 ;; Auto-expire all archived mailing lists
 (setq gnus-auto-expirable-newsgroups
-      (concat "INBOX\.\\("
-	      "junk\\|"
-              "sides\\|"
-              "lll\\|"
-	      "epsilon-sm\\|"
-              "debian\\..*\\|"
-	      "devel\\..*\\|"
-	      "gnome.announce\\|"
-	      "uni.stud\\|"
-              "system.misc\\|"
-              "system.logcheck"
-	      "\\)"))
+      (concat "debian-.*\\|"
+	      "junk\\|"))
+
+;; Spam
+(setq spam-use-bogofilter t)
+(require 'spam)
 
 ;; Keep GNUS from adding attribution header - we use Supercite
 ;;===============================
