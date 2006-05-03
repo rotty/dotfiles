@@ -106,7 +106,8 @@
      (set-buffer " *nnmail incoming*")
      (call-process-region (point-min) (point-max) "spamc" t t nil "-f")
      (goto-char (point-min))
-     (when (re-search-forward "^x-spam-flag: yes$" nil t))))
+     (when (re-search-forward "^x-spam-flag: yes$" nil t)
+       "spam")))
 
 (setq nnmail-split-methods 'nnmail-split-fancy)
 (setq nnmail-split-fancy
@@ -116,6 +117,7 @@
 	  ("list-id" "debian-devel\\.lists.debian.org" "debian-devel")
 	  ("list-id" "debian-mentors\\.lists\\.debian.org" "debian-mentors")
 	  ("list-id" "debian-release\\.lists\\.debian.org" "debian-release")
+	  ("list-id" "debian-devel-announce\\.lists\\.debian.org")
 	  "mail.misc"))
 
 ;; Change default expiry wait time for some groups
