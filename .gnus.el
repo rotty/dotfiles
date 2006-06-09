@@ -114,10 +114,20 @@
       '(| (: spam-split)
 	  (: fancy-split-spamassassin)
 	  ("list-id" "chicken-users\\.nongnu\\.org" "scheme.chicken")
+	  ("x-mailing-list" "srfi-.*@srfi\\.schemers\\.org" "scheme.srfi")
+	  
 	  ("list-id" "debian-devel\\.lists.debian.org" "debian-devel")
 	  ("list-id" "debian-mentors\\.lists\\.debian.org" "debian-mentors")
 	  ("list-id" "debian-release\\.lists\\.debian.org" "debian-release")
-	  ("list-id" "debian-devel-announce\\.lists\\.debian.org")
+	  ("list-id" "debian-devel-announce\\.lists\\.debian.org" "debian-devel-announce")
+	  ("list-id" "debian-project\\.lists.debian\\.org" "debian-project")
+	  ("list-id" "debian-python\\.lists.debian\\.org" "debian-python")	
+	  ("list-id" "pkg-scheme48-maintainers\\.lists\\.alioth\\.debian\\.org" "debian-s48") 
+	  ("list-id" "spi-private\\.lists\\.spi-inc\\.org" "spi-private")
+
+	  ("list-id" "radvd-devel-l\\.litech.org" "radvd")
+	  
+	  ("list-id" "gnome-announce-list\\.gnome.org" "gnome-announce")
 	  "mail.misc"))
 
 ;; Change default expiry wait time for some groups
@@ -135,7 +145,8 @@
 ;; Auto-expire all archived mailing lists
 (setq gnus-auto-expirable-newsgroups
       (concat "debian-.*\\|"
-	      "junk\\|"))
+	      "spi-private\\|"
+	      "spam"))
 
 ;; Spam
 (setq spam-use-bogofilter t)
@@ -318,7 +329,7 @@ removed before the mail is passed to spamassassin")
     (process-send-eof sa-learn)))
 
 (defvar gnus-spamassassin-move-mail-to-group
-  "nnimap+mail:shared.System.MissedSpam")
+  "missed-spam")
 
 (defun gnus-spamassassin-move-mail ()
   ;(gnus-summary-mark-as-read-forward 1)
