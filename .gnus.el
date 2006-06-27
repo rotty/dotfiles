@@ -122,12 +122,19 @@
 	  ("list-id" "debian-devel-announce\\.lists\\.debian.org" "debian-devel-announce")
 	  ("list-id" "debian-project\\.lists.debian\\.org" "debian-project")
 	  ("list-id" "debian-python\\.lists.debian\\.org" "debian-python")	
+	  ("list-id" "debian-events-eu\\.lists\\.debian.org" "debian-events-eu")
+	  ("list-id" "debienna\\.rerun\\.lefant\\.net" "debienna")
+
 	  ("list-id" "pkg-scheme48-maintainers\\.lists\\.alioth\\.debian\\.org" "debian-s48") 
 	  ("list-id" "spi-private\\.lists\\.spi-inc\\.org" "spi-private")
+	  ("x-mailing-list" "scheme-48@s48\\.org" "scheme48")
 
 	  ("list-id" "radvd-devel-l\\.litech.org" "radvd")
 	  
 	  ("list-id" "gnome-announce-list\\.gnome.org" "gnome-announce")
+	  ("list-id" "guile-gtk-general\\.gnu\\.org" "guile-gtk")
+	  ("list-id" "libsigc-list\\.gnome\\.org" "libsigc")
+	  
 	  "mail.misc"))
 
 ;; Change default expiry wait time for some groups
