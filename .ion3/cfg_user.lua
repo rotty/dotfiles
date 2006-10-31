@@ -11,11 +11,11 @@ defbindings("WFrame", {
   mpress(MOD1.."Shift+Button3", "mod_query.query_renameframe(_)"),
 })
 
-defbindings("WIonWS", {
-    kpress(MOD1.."Up", "WIonWS.goto_dir(_, 'above')"),
-    kpress(MOD1.."Down", "WIonWS.goto_dir(_, 'below')"),
-    kpress(MOD1.."Right", "WIonWS.goto_dir(_, 'right')"),
-    kpress(MOD1.."Left", "WIonWS.goto_dir(_, 'left')"),
+defbindings("WTiling", {
+    kpress(MOD1.."Up", "ioncore.goto_next(_sub, 'up')"),
+    kpress(MOD1.."Down", "ioncore.goto_next(_sub, 'down')"),
+    kpress(MOD1.."Right", "ioncore.goto_next(_sub, 'right')"),
+    kpress(MOD1.."Left", "ioncore.goto_next(_sub, 'left')"),
 })
 
 
