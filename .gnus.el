@@ -98,7 +98,8 @@
       '(gnus-find-subscribed-addresses))
 
 ;; Gnus methods
-;;(setq gnus-select-method '(nntp "news")
+(setq gnus-select-method '(nntp "localhost"
+				(nntp-port-number 10119)))
 (setq gnus-secondary-select-methods '((nnml "")))
 
 (defun fancy-split-spamassassin ()
@@ -134,6 +135,10 @@
 	  ("list-id" "gnome-announce-list\\.gnome.org" "gnome-announce")
 	  ("list-id" "guile-gtk-general\\.gnu\\.org" "guile-gtk")
 	  ("list-id" "libsigc-list\\.gnome\\.org" "libsigc")
+	  ("list-id" "g-wrap-dev\\.nongnu\\.org" "g-wrap")
+	  ("list-id" "gnet\\.lists\\.gnetlibrary\\.org" "gnet")
+	  
+	  ("from" "@tuwislist\\.tuwien\\.ac\\.at" "tuwis")
 	  
 	  "mail.misc"))
 
@@ -152,12 +157,24 @@
 ;; Auto-expire all archived mailing lists
 (setq gnus-auto-expirable-newsgroups
       (concat "debian-.*\\|"
+	      "libsigc\\|"
 	      "spi-private\\|"
+	      "scheme\\..*\\|"
+	      "gnome-announce"
 	      "spam"))
 
 ;; Spam
 (setq spam-use-bogofilter t)
 (require 'spam)
+
+
+(setq gnus-message-archive-method
+      '(nnfolder "archive"
+		 (nnfolder-inhibit-expiry t)
+		 (nnfolder-active-file "~/Mail/archive/active")
+		 (nnfolder-directory "~/Mail/archive/")))
+
+(setq gnus-message-archive-group "sent")
 
 ;; Keep GNUS from adding attribution header - we use Supercite
 ;;===============================
@@ -177,7 +194,7 @@
       (concat
        "Andreas Rottmann         | Rotty@ICQ      | 118634484@ICQ | a.rottmann@gmx.at\n"
        "http://yi.org/rotty      | GnuPG Key: http://yi.org/rotty/gpg.asc\n"
-       "Fingerprint              | DFB4 4EB4 78A4 5EEE 6219  F228 F92F CFC5 01FD 5B62\n"
+       "Fingerprint              | C38A 39C5 16D7 B69F 33A3  6993 22C8 27F7 35A9 92E7\n"
        "v2sw7MYChw5pr5OFma7u7Lw2m5g/l7Di6e6t5BSb7en6g3/5HZa2Xs6MSr1/2p7 hackerkey.com\n"
        ))
 
