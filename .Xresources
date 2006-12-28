@@ -1,0 +1,11 @@
+xterm*font: 	 -jmk-neep alt-medium-r-*-*-*-120-*-*-*-*-iso8859-15
+xterm*foreground: black
+xterm*background: white
+
+Rxvt.font: 	 -jmk-neep alt-medium-r-*-*-*-120-*-*-*-*-iso8859-15
+
+Emacs.font:	-jmk-neep alt-medium-r-*-*-*-120-*-*-*-*-iso8859-15
+Emacs.pane.menubar.font: -*-helvetica-medium-r-*-*-*-100-*-*-*-*-*-*
+Emacs.menu*.font: -*-helvetica-medium-r-*-*-*-100-*-*-*-*-*-*
+Emacs.dialog*.font: -*-helvetica-medium-r-*-*-*-100-*-*-*-*-*-*
+*VT100*translations:       #override
