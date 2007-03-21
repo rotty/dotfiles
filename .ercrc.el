@@ -16,6 +16,8 @@
 
 (require 'erc-ring)
 (erc-ring-mode t)
+(local-set-key [C-up] 'erc-previous-command)
+(local-set-key [C-down] 'erc-next-command)
 
 (require 'erc-netsplit)
 (erc-netsplit-mode t)
@@ -24,6 +26,8 @@
 (setq erc-timestamp-format "[%R-%m/%d]")
 
 (setq erc-auto-query 'window-noselect)
+
+(setq erc-track-exclude-types '("NICK" "JOIN" "PART" "QUIT" "MODE"))
 
 (defmacro erc-autojoin (&rest args)
   `(add-hook 'erc-after-connect
@@ -38,6 +42,6 @@
 
 (erc-autojoin
     (("irc.freenode.net") 
-     "#scheme" "#guile" "#conjure" "#scsh" "#ideologies")
+     "#scheme" "#guile" "#conjure" "#scsh" "#ideologies" "#sisc")
     (("irc.gnome.org") "#gtk+")
     (("irc.oftc.net") "#debian-devel" "#debian.or.at"))
