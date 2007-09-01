@@ -29,7 +29,9 @@
 
 ;;(add-hook 'gnus-before-startup-hook 'my-gnus-start-hook)
 
-(setq mail-sources '((file :path "/var/spool/mail/rotty")))
+;;(setq mail-sources '((file :path "/var/spool/mail/rotty")))
+
+(setq mail-source-delete-incoming t) ;; get rid of Incoming* files
 
 ;; The next bunch of declarations is for not CCing me myself
 
@@ -100,7 +102,9 @@
 ;; Gnus methods
 (setq gnus-select-method '(nntp "localhost"
 				(nntp-port-number 10119)))
-(setq gnus-secondary-select-methods '((nnml "")))
+(setq gnus-secondary-select-methods '((nnimap "localhost"
+					      (nnimap-stream ssl)
+					      (nnimap-server-port 993))))
 
 (defun fancy-split-spamassassin ()
    (save-excursion
@@ -110,48 +114,6 @@
      (when (re-search-forward "^x-spam-flag: yes$" nil t)
        "spam")))
 
-(setq nnmail-split-methods 'nnmail-split-fancy)
-(setq nnmail-split-fancy
-      '(| (: spam-split)
-	  (: fancy-split-spamassassin)
-	  ("list-id" "chicken-users\\.nongnu\\.org" "scheme.chicken")
-	  ("x-mailing-list" "srfi-.*@srfi\\.schemers\\.org" "scheme.srfi")
-	  
-	  ("list-id" "debian-devel\\.lists.debian.org" "debian-devel")
-	  ("list-id" "debian-mentors\\.lists\\.debian.org" "debian-mentors")
-	  ("list-id" "debian-release\\.lists\\.debian.org" "debian-release")
-	  ("list-id" "debian-devel-announce\\.lists\\.debian.org" "debian-devel-announce")
-	  ("list-id" "debian-project\\.lists.debian\\.org" "debian-project")
-	  ("list-id" "debian-python\\.lists.debian\\.org" "debian-python")	
-	  ("list-id" "debian-events-eu\\.lists\\.debian.org" "debian-events-eu")
-	  ("list-id" "debienna\\.rerun\\.lefant\\.net" "debienna")
-
-	  ("list-id" "pkg-scheme48-maintainers\\.lists\\.alioth\\.debian\\.org" "debian-s48") 
-	  ("list-id" "spi-private\\.lists\\.spi-inc\\.org" "spi-private")
-	  ("x-mailing-list" "scheme-48@s48\\.org" "scheme48")
-
-	  ("list-id" "radvd-devel-l\\.litech.org" "radvd")
-	  
-	  ("list-id" "gnome-announce-list\\.gnome.org" "gnome-announce")
-	  ("list-id" "guile-gtk-general\\.gnu\\.org" "guile-gtk")
-	  ("list-id" "libsigc-list\\.gnome\\.org" "libsigc")
-	  ("list-id" "g-wrap-dev\\.nongnu\\.org" "g-wrap")
-	  ("list-id" "gnet\\.lists\\.gnetlibrary\\.org" "gnet")
-	  
-	  ("from" "@tuwislist\\.tuwien\\.ac\\.at" "tuwis")
-	  
-	  "mail.misc"))
-
-;; Change default expiry wait time for some groups
-(setq nnmail-expiry-wait-function
-      (lambda (group)
-	     (cond ((string= group "INBOX")
-			    14)
-		   ((string= group "INBOX.junk")
-		    1)
-		   (t
-		    6))))
-
 (setq gnus-gcc-mark-as-read t)
 
 ;; Auto-expire all archived mailing lists
@@ -160,13 +122,18 @@
 	      "libsigc\\|"
 	      "spi-private\\|"
 	      "scheme\\..*\\|"
-	      "gnome-announce"
+	      "mit-scheme\\|"
+	      "gnome-announce\\|"
 	      "spam"))
 
 ;; Spam
 (setq spam-use-bogofilter t)
 (require 'spam)
 
+(setq gnus-spam-process-newsgroups
+      '(("^nnimap+localhost:INBOX$"
+	 ((spam spam-use-bogofilter)
+	  (ham spam-use-bogofilter)))))
 
 (setq gnus-message-archive-method
       '(nnfolder "archive"
@@ -178,7 +145,7 @@
 
 ;; Keep GNUS from adding attribution header - we use Supercite
 ;;===============================
-;(setq news-reply-header-hook nil)
+;;(setq news-reply-header-hook nil)
 
 ;; Topic mode rocks
 ;; ===============
@@ -193,7 +160,7 @@
 (setq my-full-signature
       (concat
        "Andreas Rottmann         | Rotty@ICQ      | 118634484@ICQ | a.rottmann@gmx.at\n"
-       "http://yi.org/rotty      | GnuPG Key: http://yi.org/rotty/gpg.asc\n"
+       "http://rotty.uttx.net    | GnuPG Key: http://rotty.uttx.net/gpg.asc\n"
        "Fingerprint              | C38A 39C5 16D7 B69F 33A3  6993 22C8 27F7 35A9 92E7\n"
        "v2sw7MYChw5pr5OFma7u7Lw2m5g/l7Di6e6t5BSb7en6g3/5HZa2Xs6MSr1/2p7 hackerkey.com\n"
        ))
@@ -216,8 +183,8 @@
 	"Life is a sexually transmitted disease."
 	"Software Patents: Where do you want to stifle innovation today?"
 	"Always be wary of the Software Engineer who carries a screwdriver.\n  -- Robert Paul"
-	"Could Jesus microwave a burrito so hot that he himself couldn't eat it? - Homer S."))
-
+	"Could Jesus microwave a burrito so hot that he himself couldn't eat it? - Homer S."
+	"09 f9 11 02 9d 74 e3 5b d8 41 56 c5 63 56 88 c0"))
 
 (defun my-quote-signature ()
   (let* ((rnd (random (length my-quotes)))
@@ -227,19 +194,19 @@
 (setq message-signature 'my-quote-signature)
 
 (setq gnus-posting-styles
-           '((".*"
-              (address "a.rottmann@gmx.at")
-              (signature my-quote-signature)
-              )))
+      '((".*"
+	 (address "a.rottmann@gmx.at")
+	 (signature my-quote-signature)
+	 )))
 
 ;; BBDB
 (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
 
 ;; GNUS Bonus
-;(require 'message-x)
+;;(require 'message-x)
 
 ;; from debbugs-el
-;(require 'gnus-BTS)
+;;(require 'gnus-BTS)
 
 ;; Mailcrypt
 
@@ -310,7 +277,7 @@
 	    (goto-char (point-max)))
 	  (message "running spamassassin -r ...")
 	  (let ((spamassassin (start-process "spamassassin" nil
-	  				     "spamassassin" "-r")))
+					     "spamassassin" "-r")))
 	    (process-send-region spamassassin (point-min) (point-max))
 	    (process-send-eof spamassassin))
 	  (run-hooks 'gnus-spamassassin-report-hook))
@@ -321,17 +288,17 @@
 		  (setq del 't)
 		(setq del 't)))
 	  (if (and del 
-		     (gnus-check-backend-function 'request-expire-articles
-						  gnus-newsgroup-name))
-	    (let ((not-deleted 
-		   (gnus-request-expire-articles (list article)
-						 gnus-newsgroup-name
-						 'force)))
-	      (gnus-summary-remove-process-mark article)
-	      (unless (memq article not-deleted)
-		(gnus-summary-mark-article article gnus-canceled-mark))
-	      (message "Article reported as spam and removed."))
-	(message "Article reported as spam.")))))
+		   (gnus-check-backend-function 'request-expire-articles
+						gnus-newsgroup-name))
+	      (let ((not-deleted 
+		     (gnus-request-expire-articles (list article)
+						   gnus-newsgroup-name
+						   'force)))
+		(gnus-summary-remove-process-mark article)
+		(unless (memq article not-deleted)
+		  (gnus-summary-mark-article article gnus-canceled-mark))
+		(message "Article reported as spam and removed."))
+	    (message "Article reported as spam.")))))
     (gnus-kill-buffer buffer)
     (gnus-summary-position-point)
     (gnus-set-mode-line 'summary)))
@@ -356,21 +323,21 @@ removed before the mail is passed to spamassassin")
   "missed-spam")
 
 (defun gnus-spamassassin-move-mail ()
-  ;(gnus-summary-mark-as-read-forward 1)
+  ;;(gnus-summary-mark-as-read-forward 1)
   (gnus-summary-move-article nil gnus-spamassassin-move-mail-to-group))
 
 (add-hook 'gnus-spamassassin-report-hook 'gnus-spamassassin-move-mail)
 
-; If nil, sa-learn will not be run. If a function, it will be run and
-; should invoke sa-learn (perhaps on another host). Otherwise,
-; sa-learn will be run on local host
+;; If nil, sa-learn will not be run. If a function, it will be run and
+;; should invoke sa-learn (perhaps on another host). Otherwise,
+;; sa-learn will be run on local host
 (defun gnus-spamassassin-run-sa-learn ()
-    (message "running sa-learn remotely")
-    (let ((sa-learn 
-	   (start-process "ssh" nil
-			  "mail" "sudo -u mail sa-learn")))
-      (process-send-region sa-learn (point-min) (point-max))
-      (process-send-eof sa-learn)))
+  (message "running sa-learn remotely")
+  (let ((sa-learn 
+	 (start-process "ssh" nil
+			"mail" "sudo -u mail sa-learn")))
+    (process-send-region sa-learn (point-min) (point-max))
+    (process-send-eof sa-learn)))
 
 
 ;;
@@ -384,7 +351,7 @@ removed before the mail is passed to spamassassin")
 	 (from 		(mail-header-from header))
 	 (outbuf 	(generate-new-buffer "*ddtc-output*"))
 	 (inbuf (save-excursion (nnheader-set-temp-buffer
-				  " *ddtc-input*"))))
+				 " *ddtc-input*"))))
 
     (if (not (vectorp header))
 	(message "%s is not a real article." article)
@@ -408,7 +375,7 @@ removed before the mail is passed to spamassassin")
 
 ;; keybindings for summary mode
 (add-hook 'gnus-summary-mode-hook
-          (lambda ()
+	  (lambda ()
 	    (define-key gnus-summary-mode-map "$" 'gnus-spamassassin-report)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -469,22 +436,22 @@ removed before the mail is passed to spamassassin")
 	      gnus-mime-multipart-functions))))
 
 
-;----------- from Kai.Grossjohann@CS.Uni-Dortmund.DE (Kai Groﬂjohann)
+;;----------- from Kai.Grossjohann@CS.Uni-Dortmund.DE (Kai Groﬂjohann)
 
-; This function returns a string containing white space if the
-; message size is lesser than 5Kb, and the size in Kb or Mb if it is
-; greater.
+;; This function returns a string containing white space if the
+;; message size is lesser than 5Kb, and the size in Kb or Mb if it is
+;; greater.
 
 (defsubst kai-gnus-summary-line-message-size (header)
   (let ((c (or (mail-header-chars header) 0)))
     (cond ((< c 5120) "     ")
-          ((< c 1048576) (format "%4dK" (/ c 1024.0)))
-          (t (format "%4dM" (/ c 1048576.0))))))
+	  ((< c 1048576) (format "%4dK" (/ c 1024.0)))
+	  (t (format "%4dM" (/ c 1048576.0))))))
 
-; This add a %k field usable for the gnus-summary-line (the size
-; field as defined above)
-;(add-to-list 'gnus-summary-line-format-alist
-;             '(?k (kai-gnus-summary-line-message-size gnus-tmp-header) ?s))
+;; This add a %k field usable for the gnus-summary-line (the size
+;; field as defined above)
+;;(add-to-list 'gnus-summary-line-format-alist
+;;             '(?k (kai-gnus-summary-line-message-size gnus-tmp-header) ?s))
 
 (defun gnus-article-sort-by-chars (h1 h2)
   "Sort articles by size."
