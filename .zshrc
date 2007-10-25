@@ -59,6 +59,7 @@ setopt MULTIOS
 setopt INTERACTIVE_COMMENTS
 setopt NO_HUP
 setopt NO_NOMATCH
+setopt APPEND_HISTORY
 
 if which dircolors > /dev/null; then
   eval `dircolors`
