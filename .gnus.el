@@ -102,17 +102,10 @@
 ;; Gnus methods
 (setq gnus-select-method '(nntp "localhost"
 				(nntp-port-number 10119)))
-(setq gnus-secondary-select-methods '((nnimap "localhost"
+(setq gnus-secondary-select-methods '((nnimap ""
+					      (nnimap-address "nathot")
 					      (nnimap-stream ssl)
 					      (nnimap-server-port 993))))
-
-(defun fancy-split-spamassassin ()
-   (save-excursion
-     (set-buffer " *nnmail incoming*")
-     (call-process-region (point-min) (point-max) "spamc" t t nil "-f")
-     (goto-char (point-min))
-     (when (re-search-forward "^x-spam-flag: yes$" nil t)
-       "spam")))
 
 (setq gnus-gcc-mark-as-read t)
 
@@ -124,17 +117,22 @@
 	      "scheme\\..*\\|"
 	      "mit-scheme\\|"
 	      "gnome-announce\\|"
+	      "guile-\\|"
 	      "spam"))
 
 ;; Spam
-(setq spam-use-bogofilter t)
 (require 'spam)
 
-(setq gnus-spam-process-newsgroups
-      '(("^nnimap+localhost:INBOX$"
-	 ((spam spam-use-bogofilter)
-	  (ham spam-use-bogofilter)))))
+(setq gnus-parameters
+      '(("nnimap:spam$"
+	 (gnus-article-sort-functions '(gnus-article-sort-by-chars))
+	 (ham-process-destination "nnimap:INBOX" "nnimap:training.ham")
+	 (spam-contents gnus-group-spam-classification-spam))
+	("nnimap:\\(INBOX\\|debian-\\|scheme\\.\\|guile-\\)"
+	 (spam-process-destination . "nnimap:training.spam")
+         (spam-contents gnus-group-spam-classification-ham))))
 
+;; archiving
 (setq gnus-message-archive-method
       '(nnfolder "archive"
 		 (nnfolder-inhibit-expiry t)
@@ -171,7 +169,7 @@
 	"It's *GNU*/Linux dammit!"
 	"Anonymous surfing? Use Tor: http://tor.eff.net"
 	"Make free software, not war!"
-	"Latein ist das humanoide Äquivalent zu Fortran.\n   -- Alexander Bartolich in at.linux"
+	;;"Latein ist das humanoide Äquivalent zu Fortran.\n   -- Alexander Bartolich in at.linux"
 	"Say NO to Software Patents! -- http://petition.eurolinux.org/"
 	"Any technology not indistinguishable from magic is insufficiently advanced.\n   -- Terry Pratchett"
 	"The best way to accelerate a Windows machine is at 9.81 m/s^2"

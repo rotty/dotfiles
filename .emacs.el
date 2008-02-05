@@ -34,6 +34,9 @@
 ;; Enhanced buffer switching
 (iswitchb-mode t)
 
+;; Enhanced window switching
+(windmove-default-keybindings)
+
 ;; Syntax coloring
 (global-font-lock-mode t)
 
@@ -46,6 +49,8 @@
 (setq custom-file "~/.emacs.d/.customized")
 (load-file (expand-file-name custom-file))
 
+(setq user-mail-address "a.rottmann@gmx.at")
+
 (add-hook 'mail-setup-hook 'mail-abbrevs-setup)
 (define-key emacs-lisp-mode-map "\C-xx" 'edebug-defun)
 
@@ -56,6 +61,40 @@
     (cond ((file-directory-p f)
 	   (add-to-list 'load-path f)))))
 
-(dolist (snippet '("scheme" "cplus" "slime48" "tramp" "crypt" "bbdb" "irc" "goodies"
-		   "python" "emacs-wiki" "css-mode" "rst-mode" "muse"))
+(defun browse-url-firefox-new-tab (url &optional new-window)
+  "Open URL in a new tab in Firefox."
+  (interactive (browse-url-interactive-arg "URL: "))
+  (if (string= (substring url 0 1) "/")
+      (setq url (concat "file://" url)))
+  (let ((cmd (shell-command-to-string
+	      (concat "/usr/lib/firefox/firefox-xremote-client -a any 'openURL("
+		      url ",new-tab)'"))))
+    (unless (string= "" cmd)
+      (message "Starting Firefox...")
+      (start-process (concat "firefox " url) nil "firefox" url)
+      (message "Starting Firefox...done"))))
+
+(setq browse-url-browser-function 'browse-url-firefox-new-tab)
+
+(setq debian-changelog-mailing-address "rotty@debian.org")
+
+(defvar user-temporary-file-directory
+  (concat temporary-file-directory user-login-name "/"))
+(make-directory user-temporary-file-directory t)
+(setq backup-by-copying t)
+(setq backup-directory-alist
+      `(("." . ,user-temporary-file-directory)
+        (,tramp-file-name-regexp nil)))
+(setq auto-save-list-file-prefix
+      (concat user-temporary-file-directory ".auto-saves-"))
+(setq auto-save-file-name-transforms
+      `((".*" ,user-temporary-file-directory t)))
+
+(dolist (snippet '("scheme" "cplus" "slime48" "tramp" "bbdb" "irc" "goodies"
+		   "csharp" "python" "haskell" "emacs-wiki" "css-mode" "rst-mode"
+		   "muse" "dvc" "beagle" "imaxima" "org" "remind"))
   (load-file (expand-file-name (concat "~/.emacs.d/config/" snippet ".el"))))
+
+;; Workaround for emacs22, see
+;; http://groups.google.com/group/gnu.emacs.help/msg/d6237fdac86a7634
+(provide 'sb-info)

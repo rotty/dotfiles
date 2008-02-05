@@ -18,7 +18,7 @@
   '(progn
      (slime-setup)
      (setq slime-lisp-implementations
-	   `((s42 ("scheme42") :init slime48-init-command)
+	   `((s42 ("scheme42" "-h" "10000000") :init slime48-init-command)
 	     (s48 ("scheme48") :init slime48-init-command)
 	     ,@slime-lisp-implementations))))
 

@@ -19,6 +19,6 @@
 ;; Misc helpful functions
 (load "util-funcs")
 
-(setq write-file-hooks (cons 'update-copyright-with-queries write-file-hooks))
+(add-hook 'write-file-hooks 'copyright-update)
 
 (setq darcsum-diff-switches "-u")

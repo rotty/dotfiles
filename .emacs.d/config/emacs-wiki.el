@@ -58,10 +58,10 @@
 	 )
 
 	("g-wrap"
-	 (emacs-wiki-publishing-directory . "~/src/contrib/g-wrap/+www")
-	 (emacs-wiki-directories "~/src/contrib/g-wrap/+wiki")
-	 (emacs-wiki-publishing-header . "<lisp>(insert-file \"~/src/contrib/g-wrap/+wiki/.header\")</lisp>")
-         (emacs-wiki-publishing-footer . "<lisp>(insert-file \"~/src/contrib/g-wrap/+wiki/.footer\")</lisp>")
+	 (emacs-wiki-publishing-directory . "~/src/g-wrap/+www")
+	 (emacs-wiki-directories "~/src/g-wrap/+wiki")
+	 (emacs-wiki-publishing-header . "<lisp>(insert-file \"~/src/g-wrap/+wiki/.header\")</lisp>")
+         (emacs-wiki-publishing-footer . "<lisp>(insert-file \"~/src/g-wrap/+wiki/.footer\")</lisp>")
 	 )
 
 	("guile-lib"
