@@ -90,9 +90,33 @@
 (setq auto-save-file-name-transforms
       `((".*" ,user-temporary-file-directory t)))
 
-(dolist (snippet '("scheme" "cplus" "slime48" "tramp" "bbdb" "irc" "goodies"
-		   "csharp" "python" "haskell" "emacs-wiki" "css-mode" "rst-mode"
-		   "muse" "dvc" "beagle" "imaxima" "org" "remind"))
+(defvar config-snippets
+  '(
+    "scheme"
+    "cplus"
+    "java"
+    "slime48"
+    "tramp"
+    "bbdb"
+    "irc"
+    "goodies"
+    "csharp"
+    "python"
+    "haskell"
+    "emacs-wiki"
+    "css-mode"
+    "rst-mode"
+    "muse"
+    "dvc"
+    "beagle"
+    "imaxima"
+    "org"
+    "remind"
+    "gitsum"
+    "yasnippet"
+    ))
+
+(dolist (snippet config-snippets)
   (load-file (expand-file-name (concat "~/.emacs.d/config/" snippet ".el"))))
 
 ;; Workaround for emacs22, see

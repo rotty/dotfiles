@@ -6,7 +6,7 @@
 (setq c-recognize-knr-p nil)
 
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
-(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+;;(add-hook 'c++-mode-hook 'my-c++-mode-hook)
 
 (defconst visotech-c++-style
   '((c-basic-offset             . 4)
@@ -78,7 +78,7 @@
   t)
 
 (defun my-c-mode-common-hook ()
-  (hs-minor-mode 1)
+  ;;(hs-minor-mode 1)
   (setq case-fold-search nil)
   ;; Offset customizations not in my-c-style
   (c-set-offset 'member-init-intro '++)
