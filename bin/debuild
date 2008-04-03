@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ "$CXX" = "" ]; then
+  CXX="ccache g++" 
+fi
+
+if [ "$CC" = "" ]; then
+  CC="ccache gcc" 
+fi
+
+export CXX CC
+
+exec /usr/bin/debuild -e CXX -e CC -e DISPLAY -e GPG_AGENT_INFO --no-lintian $@
