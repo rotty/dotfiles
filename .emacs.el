@@ -90,6 +90,12 @@
 (setq auto-save-file-name-transforms
       `((".*" ,user-temporary-file-directory t)))
 
+(require 'server)
+(defun gnus/server ()
+  (setq server-name "gnus")
+  (server-start)
+  (gnus))
+
 (load "~/.emacs.d/config-snippets.el")
 
 (dolist (snippet config-snippets)

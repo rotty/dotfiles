@@ -19,18 +19,6 @@
 (add-hook 'message-mode-hook 'mc-install-write-mode)
 (add-hook 'news-reply-mode-hook 'mc-install-write-mode)
 
-(defun my-gnus-start-hook ()
-  (let* ((fname (expand-file-name "~/.emacs-mail-crash-box"))
-	 (finfo (file-attributes fname))
-	 (fsize (cond (finfo (nth 7 finfo)) (t -1))))
-    (if (or (= fsize 0) (= fsize 1))
-	(delete-file fname))))
-
-
-;;(add-hook 'gnus-before-startup-hook 'my-gnus-start-hook)
-
-;;(setq mail-sources '((file :path "/var/spool/mail/rotty")))
-
 (setq mail-source-delete-incoming t) ;; get rid of Incoming* files
 
 ;; The next bunch of declarations is for not CCing me myself
