@@ -45,6 +45,7 @@ colors
 
 if [ "$TERM" = dumb ]; then
     PS1='$ '
+    unsetopt zle
 else
     PS1="%{${fg[magenta]}%}%m%{${fg[default]}%}:%{${fg[cyan]}%}%~%{${fg[default]}%}%# "
 fi
