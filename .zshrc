@@ -43,7 +43,11 @@ fi
 autoload colors
 colors
 
-PS1="%{${fg[magenta]}%}%m%{${fg[default]}%}:%{${fg[cyan]}%}%~%{${fg[default]}%}%# "
+if [ "$TERM" = dumb ]; then
+    PS1='$ '
+else
+    PS1="%{${fg[magenta]}%}%m%{${fg[default]}%}:%{${fg[cyan]}%}%~%{${fg[default]}%}%# "
+fi
 
 case $TERM in
   xterm*|rxvt*)
