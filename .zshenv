@@ -38,7 +38,7 @@ export EDITOR=zile
 export CVS_RSH=ssh
 export CCACHE_UNIFY=yes
 export LANG=C
-if [ -f /etc/locale.gen ] && grep -q de_AT.UTF-8 /etc/locale.gen; then
+if [ -f /etc/locale.gen ] && grep -q ^de_AT.UTF-8 /etc/locale.gen; then
   export LC_CTYPE=de_AT.UTF-8
 fi
 export PYTHONSTARTUP="$HOME/.pythonrc"
