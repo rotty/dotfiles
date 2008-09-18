@@ -1,0 +1,48 @@
+#!/usr/bin/perl
+#
+# Converts remind-format appointments on standard input to diary format on standard out
+#
+
+my $USE_EUROPEAN_DATES = 0;
+
+open (REM, "rem -s3 -r -q |") || die;
+while (<REM>) {
+    if (m%([0-9]{4})/([0-9]+)/([0-9]+) \S+ \S+ (\S+) (\S+)\s+(?:[0-9]+:[0-9]+[ap]m )?(.+)%) {
+	($year, $month, $day, $duration, $start, $desc) = ($1, $2, $3, $4, $5, $6);
+
+	if (substr($desc, 0, 1) eq "&") {
+	    $desc = substr($desc, 1);
+	    $mark = "&";
+	} else {
+	    $mark = "";
+	}
+
+	if ($start eq "*") {
+	    printf ("%s%s/%s/%s %s\n", $mark,
+                    ($USE_EUROPEAN_DATES ? $day : $month),
+                    ($USE_EUROPEAN_DATES ? $month : $day),
+                    $year, $desc);
+	} else {
+	    $start = int($start);
+
+	    if ($duration eq "*") {
+		printf ("%s%s/%s/%s %d:%02d %s\n", $mark,
+                        ($USE_EUROPEAN_DATES ? $day : $month),
+                        ($USE_EUROPEAN_DATES ? $month : $day),
+                        $year, $start / 60, $start % 60, $desc);
+	    } else {
+		$duration = int($duration);
+		$end = $start + $duration;
+
+		printf ("%s%s/%s/%s %d:%02d-%d:%02d %s\n",
+			$mark,
+                        ($USE_EUROPEAN_DATES ? $day : $month),
+                        ($USE_EUROPEAN_DATES ? $month : $day),
+                        $year, $start / 60, $start % 60,
+			$end / 60, $end % 60, $desc);
+	    }
+	}
+    }
+}
+
+close(REM);
