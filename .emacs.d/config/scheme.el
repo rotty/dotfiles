@@ -1,4 +1,4 @@
-(eval-after-load "scheme" '(modify-syntax-entry ?, "'   " scheme-mode-syntax-table))
+;;(eval-after-load "scheme" '(modify-syntax-entry ?, "'   " scheme-mode-syntax-table))
 
 ;;; Quack-el (extended Scheme support)
 (require 'quack)
