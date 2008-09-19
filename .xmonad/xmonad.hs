@@ -26,7 +26,7 @@ myKeys (XConfig {modMask = modm}) =
 main = xmonad $ defaultConfig 
        { manageHook       = manageDocks <+> manageHook defaultConfig
        , logHook          = ewmhDesktopsLogHook
-       , layoutHook       = avoidStruts $ layoutHook defaultConfig
+       , layoutHook       = ewmhDesktopsLayout $ avoidStruts $ layoutHook defaultConfig
        , modMask          = mod4Mask
        , keys             = \c -> myKeys c `M.union` keys defaultConfig c
        }
