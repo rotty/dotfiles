@@ -7,6 +7,8 @@ SAVEHIST=10000
 
 setopt HIST_IGNORE_DUPS
 setopt EXTENDED_HISTORY
+setopt APPEND_HISTORY
+setopt SHARE_HISTORY
 
 # UTF-8 for gnome-terminal
 case "$COLORTERM" in
@@ -64,7 +66,6 @@ setopt MULTIOS
 setopt INTERACTIVE_COMMENTS
 setopt NO_HUP
 setopt NO_NOMATCH
-setopt APPEND_HISTORY
 
 if which dircolors > /dev/null; then
   eval `dircolors`
@@ -124,6 +125,13 @@ zstyle -e ':completion:*:tla:*' completer _tla
 # Activate completion
 zstyle ':completion:*' completer _complete
 zstyle ':completion:*' matcher-list '' '+m:{a-z}={A-Z}' '+r:|[._-]=* r:|=*' '+l:|=* r:|=*'
+
+# Use a cache
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh/cache
+
+# Ignore completion functions for commands you don't have
+zstyle ':completion:*:functions' ignored-patterns '_*'
 
 autoload -U compinit
 compinit

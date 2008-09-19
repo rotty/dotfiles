@@ -1,9 +1,5 @@
 #!/bin/zsh
 
-# Environment variables
-export SSH_ASKPASS=/usr/bin/ssh-askpass-fullscreen
-export OOO_FORCE_DESKTOP=gnome
-
 xset dpms 240 600 1200
 #xmodmap ~/.xmodmap-`uname -n`
 
@@ -14,7 +10,7 @@ if [ -z `pidof irexec` ] && command -v irexec; then
     irxevent &
 fi
 
-ssh-add
+#ssh-add
 
 xset b off
 
@@ -24,10 +20,5 @@ fi
 
 xmodmap -e "add mod5 = Menu"
 
-#emacs -name "main" -eval "(setq gnuserv-kill-quietly t)" -f gnuserv-start &
-#emacs -name "erc" -f irc &
-#firefox &
-#x-terminal-emulator &
-#exec larswm
 exec gnome-session
-#exec fluxbox
+
