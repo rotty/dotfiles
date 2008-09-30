@@ -20,6 +20,8 @@ esac
 alias la='ls -lA'
 alias hr='hash -r'
 
+alias svn-cd='svn diff | colordiff | less -R'
+
 # Grep source trees
 alias pyfind='find -type f -a \( -name "*.py" -o -name "*.ptl" \) | \
               xargs grep '
