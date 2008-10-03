@@ -4,6 +4,10 @@
 (require 'quack)
 
 (autoload 'run-scheme "cmuscheme48" "Run an inferior Scheme48 process." t)
+(setq scheme-program-name "scheme48")
+(dolist (elt '(("\\.sls$" . scheme-mode)
+	       ("\\.sps$" . scheme-mode)))
+  (add-to-list 'auto-mode-alist elt))
 
 ;; paredit.el
 (autoload 'enable-paredit-mode "paredit"
@@ -14,7 +18,7 @@
 (add-hook 'scheme-mode-hook 'enable-paredit-mode)
 
 (setq quack-pltish-keywords-to-fontify
-      '("and" "begin" "call-with-current-continuation" "call-with-input-file" "call-with-output-file" "call/cc" "case" "case-lambda" "compound-unit/sig" "cond" "condition" "cond-expand" "define" "define/optional" "define-condition-type" "define-macro" "define-module" "define-public" "define-signature" "define-syntax" "define-syntax-set" "define-values" "define-values/invoke-unit/sig" "define-method" "define-generic" "define-class" "delay" "do" "else" "exit-handler" "guard" "if" "import" "lambda" "let" "let*" "let*-values" "let+" "let-keywords" "let-optional" "let-syntax" "let-values" "let/ec" "letrec" "letrec-values" "letrec-syntax" "match-lambda" "match-lambda*" "match-let" "match-let*" "match-letrec" "match-define" "mixin" "opt-lambda" "or" "override" "override*" "namespace-variable-bind/invoke-unit/sig" "parameterize" "private" "private*" "protect" "provide" "provide-signature-elements" "provide/contract" "public" "public*" "quote" "receive" "rename" "require" "require-for-syntax" "send" "send*" "setter" "set!" "set!-values" "signature->symbols" "super-instantiate" "syntax-case" "syntax-case*" "syntax-error" "syntax-rules" "unit/sig" "unless" "when" "with-handlers" "with-method" "with-syntax"))
+      '("and" "begin" "call-with-current-continuation" "call-with-input-file" "call-with-output-file" "call/cc" "case" "case-lambda" "compound-unit/sig" "cond" "condition" "cond-expand" "define" "define/optional" "define-condition-type" "define-macro" "define-module" "define-public" "define-signature" "define-syntax" "define-syntax-set" "define-values" "define-values/invoke-unit/sig" "define-method" "define-generic" "define-class" "delay" "do" "else" "exit-handler" "guard" "if" "import" "lambda" "let" "let*" "let*-values" "let+" "let-keywords" "let-optional" "let-syntax" "let-values" "let/ec" "letrec" "letrec-values" "letrec-syntax" "library" "match-lambda" "match-lambda*" "match-let" "match-let*" "match-letrec" "match-define" "mixin" "opt-lambda" "or" "override" "override*" "namespace-variable-bind/invoke-unit/sig" "parameterize" "private" "private*" "protect" "provide" "provide-signature-elements" "provide/contract" "public" "public*" "quote" "receive" "rename" "require" "require-for-syntax" "send" "send*" "setter" "set!" "set!-values" "signature->symbols" "super-instantiate" "syntax-case" "syntax-case*" "syntax-error" "syntax-rules" "unit/sig" "unless" "when" "with-handlers" "with-method" "with-syntax"))
 
 (dolist (hint
 	 '((with-test-prefix 1)
@@ -53,6 +57,9 @@
 	   (call-with-input-url 1)
 	   (call-with-file-fasdump-port 2)
 	   (call-with-file-fasload-port 2)
+	   (call-with-string-output-port)
+	   (call-with-input-string 1)
+	   (call-with-port 1)
 	   (restart-command-processor 2)
 	   (let-fluid 2)
 	   (with-condition-context 1)
@@ -71,5 +78,7 @@
 	   (parse 1)
 	   (object 1)
 	   (set-standard-read-macro! 2)
-	   (guard 1)))
+	   (add-tests-with-string-output 1)
+	   (guard 1)
+	   (library 1)))
   (put (car hint) 'scheme-indent-function (cadr hint)))

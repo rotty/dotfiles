@@ -2,13 +2,14 @@
 
 (load "~/.ercrc-local")
 
-(require 'erc-join)
-(erc-autojoin-mode nil)
-(setq erc-autojoin-channels-alist
-      '(("irc.freenode.net" "#debian-devel" "#scheme" "#guile" "#conjure" 
-	 "#scsh" )
-	("irc.gnome.org" "#gtk+")
-	("irc.oftc.net" "#debian-devel")))
+;; (require 'erc-join)
+;; (erc-autojoin-mode nil)
+;; (setq erc-autojoin-channels-alist
+;;       '(("irc.freenode.net" "#debian-devel" "#scheme" "#guile" "#conjure" 
+;; 	 "#scsh" )
+;; 	("irc.gnome.org" "#gtk+")
+;; 	("irc.oftc.net" "#debian-devel")
+;; 	))
 
 (require 'erc-match)
 (setq erc-keywords '("rotty"))
@@ -46,5 +47,6 @@
 (erc-autojoin
     (("irc.freenode.net") 
      "#scheme" "#guile" "#conjure" "#scsh" "#ideologies" "#sisc")
-    (("irc.gnome.org") "#gtk+" "#flow" "#vala")
-    (("irc.oftc.net") "#debian-devel" "#debian.or.at"))
+    (("irc.gnome.org") "#gtk+" "#flow" "#vala" "#gnome-hackers")
+    (("irc.oftc.net") "#debian-devel" "#debian.or.at")
+    (("irc.perl.org") "#parrot"))

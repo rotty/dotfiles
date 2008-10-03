@@ -2,6 +2,6 @@
 
 if [ ! -e "/tmp/emacs${UID}/gnus" ]; then
     emacs -f gnus/server &
-    while [ ! -e "/tmp/esrv$tempuid-$temphost" ] ; do sleep 1 ; done
+    while [ ! -e "/tmp/emacs${UID}/gnus" ] ; do sleep 1 ; done
 fi
 emacsclient -s gnus -e "(progn (gnus-url-mailto \"$1\") (set-buffer-modified-p nil))"
