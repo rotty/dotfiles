@@ -54,6 +54,9 @@
 (add-hook 'mail-setup-hook 'mail-abbrevs-setup)
 (define-key emacs-lisp-mode-map "\C-xx" 'edebug-defun)
 
+;; woman
+(setq woman-use-own-frame nil)
+
 ;; Extend load-path
 (let ((top (expand-file-name "~/.emacs.d/lisp")))
   (add-to-list 'load-path top)
