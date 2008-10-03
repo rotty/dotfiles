@@ -47,7 +47,8 @@
 (setq diary-file "~/.diary.planner")
 
 (setq custom-file "~/.emacs.d/.customized")
-(load-file (expand-file-name custom-file))
+(if (file-readable-p custom-file)
+  (load-file (expand-file-name custom-file)))
 
 (setq user-mail-address "a.rottmann@gmx.at")
 
@@ -93,17 +94,75 @@
 (setq auto-save-file-name-transforms
       `((".*" ,user-temporary-file-directory t)))
 
+;; support for starting gnus as a server
 (require 'server)
 (defun gnus/server ()
   (setq server-name "gnus")
   (server-start)
   (gnus))
 
-(load "~/.emacs.d/config-snippets.el")
+
+;; Config snippets loading; this provides an easy way to define
+;; 'configuration snippets' for use with a specific package (that may
+;; be not installed), and enable loading that snippet when its
+;; basename (specified as a symbol) is part of the variable
+;; config-snippets.
+(defgroup config-snippets nil
+  "Configuration snippets -- elisp files that are loaded at the startup.")
+
+(defcustom config-snippets '()
+  "Specifies the config snippets to be loaded at startup.
+Elements may be strings (interpreted as literal filenames) or
+symbols (converted to as string, which is suffixed with \".el\")."
+  :group 'config-snippets
+  :type '(repeat (choice symbol string)))
+
+(defcustom config-snippet-path '("~/.emacs.d/config/")
+  "Specifies the path in which config snippets are searched"
+  :group 'config-snippets
+  :type '(repeat directory))
 
 (dolist (snippet config-snippets)
-  (load-file (expand-file-name (concat "~/.emacs.d/config/" (symbol-name snippet) ".el"))))
+  (dolist (dir config-snippet-path)
+    (let ((file-name (expand-file-name (concat dir (if (symbolp snippet)
+						       (concat (symbol-name snippet) ".el")
+						     snippet)))))
+      (if (file-readable-p file-name)
+	  (load-file file-name)))))
 
+
 ;; Workaround for emacs22, see
 ;; http://groups.google.com/group/gnu.emacs.help/msg/d6237fdac86a7634
 (provide 'sb-info)
+
+;; Enable desktop saving on exit; also loads the desktop on startup, so goes last
+(desktop-save-mode 1)
+
+;; Desktop configuration
+(setq history-length 250)
+(add-to-list 'desktop-globals-to-save 'file-name-history)
+
+;; Desktop autosave (http://www.emacswiki.org/cgi-bin/wiki/DeskTop)
+(setq *foo-desktop-dir* (expand-file-name "~/.emacs.d/desktop/"))
+
+(setq desktop-dir *foo-desktop-dir*)
+(setq desktop-path (list *foo-desktop-dir*))
+
+(setq *foo-desktop-file* (concat desktop-dir desktop-base-file-name))
+
+(setq *foo-desktop-lock* (concat desktop-dir desktop-base-lock-name))
+
+(defun desktop-in-use-p ()
+  (and (file-exists-p *foo-desktop-file*)
+       (file-exists-p *foo-desktop-lock*)))
+
+(defun autosave-desktop ()
+  (if (desktop-in-use-p)
+      (desktop-save-in-desktop-dir)))
+
+;; Can be switched off with (cancel-timer *foo-desktop-saver-timer*)
+(add-hook 'after-init-hook
+	  (lambda ()
+	    (setq *foo-desktop-saver-timer* 
+		  (run-with-timer 5 300 'autosave-desktop))))
+
