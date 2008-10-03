@@ -111,6 +111,13 @@ zstyle -e ':completion:*:(ssh|scp):*' hosts 'reply=(
 # History
 HISTFILE=$HOME/.zsh_history
 
+# mess support
+function mess {
+  DIR=`~/bin/mess.rb "$@"`
+  [[ $? -eq 0 ]] && cd "$DIR"
+}
+
+
 #
 # unison completion
 #
