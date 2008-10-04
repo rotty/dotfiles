@@ -13,9 +13,13 @@
 (autoload 'enable-paredit-mode "paredit"
   "Turns on pseudo-structural editing of Lisp code."
   t)
-(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-(add-hook 'lisp-mode-hook 'enable-paredit-mode)
-(add-hook 'scheme-mode-hook 'enable-paredit-mode)
+
+(defun my-lispy-mode-hook ()
+  (enable-paredit-mode)
+  (add-to-list 'hippie-expand-try-functions-list 'try-my-dabbrev-substring))
+
+(dolist (hook '(emacs-lisp-mode-hook lisp-mode-hook scheme-mode-hook))
+  (add-hook hook 'my-lispy-mode-hook))
 
 (put 'scheme48-package 'safe-local-variable 'symbolp)
 
