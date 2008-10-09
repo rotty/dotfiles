@@ -1,7 +1,10 @@
 ;;(eval-after-load "scheme" '(modify-syntax-entry ?, "'   " scheme-mode-syntax-table))
 
-;;; Quack-el (extended Scheme support)
+;;; Quack-el (extended Scheme support, http://www.neilvandyke.org/quack/)
 (require 'quack)
+
+;; bracketphobia, http://www.emacswiki.org/cgi-bin/wiki/bracketphobia.el
+(require 'bracketphobia)
 
 (autoload 'run-scheme "cmuscheme48" "Run an inferior Scheme48 process." t)
 (setq scheme-program-name "scheme48")
@@ -10,13 +13,24 @@
   (add-to-list 'auto-mode-alist elt))
 
 ;; paredit.el
-(autoload 'enable-paredit-mode "paredit"
-  "Turns on pseudo-structural editing of Lisp code."
-  t)
+(require 'paredit)
+
+;; override these paredit bindings, they annoy the hell out of me
+;; (they are bound to other key sequences as well, so no
+;; functionality loss)
+(define-key paredit-mode-map (kbd "C-<left>") nil)
+(define-key paredit-mode-map (kbd "C-<right>") nil)
 
 (defun my-lispy-mode-hook ()
   (enable-paredit-mode)
-  (add-to-list 'hippie-expand-try-functions-list 'try-my-dabbrev-substring))
+  
+  (local-set-key (kbd "M-/") (make-hippie-expand-function
+			      '(try-my-dabbrev-substring
+				try-expand-dabbrev-visible
+				try-expand-dabbrev-from-kill
+				try-expand-dabbrev-all-buffers
+				try-complete-file-name-partially
+				try-complete-file-name))))
 
 (dolist (hook '(emacs-lisp-mode-hook lisp-mode-hook scheme-mode-hook))
   (add-hook hook 'my-lispy-mode-hook))
@@ -86,5 +100,8 @@
 	   (set-standard-read-macro! 2)
 	   (add-tests-with-string-output 1)
 	   (guard 1)
-	   (library 1)))
+	   (library 1)
+	   (trace-define 1)
+	   (trace-lambda 2)
+	   (and-let* 1)))
   (put (car hint) 'scheme-indent-function (cadr hint)))
