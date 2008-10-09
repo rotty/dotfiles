@@ -2,8 +2,8 @@
 # History
 #
 HISTFILE=$HOME/.zsh_history
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=40000
+SAVEHIST=40000
 
 setopt HIST_IGNORE_DUPS
 setopt EXTENDED_HISTORY
@@ -109,9 +109,6 @@ zstyle -e ':completion:*:(ssh|scp):*' hosts 'reply=(
 		     /dev/null)"}%%[# ]*}//,/ }
     ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*}
     )'
-
-# History
-HISTFILE=$HOME/.zsh_history
 
 # mess support
 function mess {

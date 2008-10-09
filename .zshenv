@@ -43,6 +43,7 @@ if [ -f /etc/locale.gen ] && grep -q ^de_AT.UTF-8 /etc/locale.gen; then
 fi
 export PYTHONSTARTUP="$HOME/.pythonrc"
 export PYTHONDOCS="/usr/share/doc/python2.2-doc/html"
+export PLTCOLLECTS="$PLTCOLLECTS:$HOME/src/spe.r6rs/targets/mzscheme"
 
 # Personal info
 
