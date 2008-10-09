@@ -4,15 +4,36 @@
 # projects, installing them user-locally using stow
 
 project_name="`basename $PWD`"
-prefix_arg="--prefix=$HOME/.system/stow/$project_name"
 
-echo -n "Install $project_name user-locally? [y/n] "
+if [ -n "$1" ]; then
+    case "$1" in
+	--system)
+	    args=""
+	    location="system-wide"
+	    prefix_arg="--prefix=/usr/local/stow/$project_name"
+	    getroot="sudo"
+	    ;;
+	*)
+	    echo "do-install: unknown option $1"
+	    exit 1
+	    ;;
+    esac
+else
+    getroot=""
+    args="--user"
+    location="user-locally"
+    prefix_arg="--prefix=$HOME/.system/stow/$project_name"
+fi
+
+echo -n "Install $project_name $location? [y/n] "
 read answer
 if [ "$answer" = y ]; then
     if [ -x configure ]; then
-	./configure "$prefix_arg" && make && make install && do-stow --user "$project_name"
+	./configure "$prefix_arg" && make && $getroot make install && do-stow $args "$project_name"
     elif [ -x autogen.sh ]; then
-	./autogen.sh "$prefix_arg" && make && make install && do-stow --user "$project_name"
+	./autogen.sh "$prefix_arg" && make && $getroot make install && do-stow $args "$project_name"
+    elif [ -x setup.py ]; then
+	python setup.py build && $getroot python setup.py install "$prefix_arg"
     else
 	echo "no installable project found here, aborting."
 	exit 1
