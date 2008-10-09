@@ -5,11 +5,19 @@ import XMonad.Actions.CycleWS
 import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Actions.UpdatePointer
+import XMonad.Actions.MouseGestures
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 import qualified XMonad.Actions.Submap as SM
 import qualified XMonad.Actions.Search as S
+
+--myMouse :: XConfig t -> M.Map (ButtonMask, Button) (X ())
+myMouse (XConfig {modMask = modm}) = 
+    M.fromList $
+         [ -- Mouse gestures
+           ((modm, button3), mouseGesture gestures) 
+         ]
 
 myKeys :: XConfig t -> M.Map (KeyMask, KeySym) (X ())
 myKeys (XConfig {modMask = modm}) =
@@ -37,10 +45,19 @@ searchEngineMap method = M.fromList $
                          , ((0, xK_w), method S.wikipedia)
                          ]
 
+gestures = M.fromList $
+           [ ([], focus)
+           , ([U], \w -> focus w >> windows W.swapUp)
+           , ([D], \w -> focus w >> windows W.swapDown)
+           , ([R, D], \_ -> sendMessage NextLayout)
+           , ([R, D, L, U], \w -> focus w >> kill)
+           ]
+
 main = xmonad $ defaultConfig 
        { manageHook       = manageDocks <+> manageHook defaultConfig
        , logHook          = ewmhDesktopsLogHook >> updatePointer Nearest
        , layoutHook       = ewmhDesktopsLayout $ avoidStruts $ layoutHook defaultConfig
        , modMask          = mod4Mask
        , keys             = \c -> myKeys c `M.union` keys defaultConfig c
+       , mouseBindings    = \c -> myMouse c `M.union` (mouseBindings defaultConfig c)
        }
