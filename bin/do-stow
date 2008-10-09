@@ -1,0 +1,18 @@
+#!/bin/sh
+
+getroot=sudo
+prefix=/usr/local/stow
+while [ -n "$1" ]; do
+    case "$1" in
+	--user)
+	    prefix=$HOME/.system/stow
+	    getroot=""
+	    shift
+	    ;;
+	*)
+	    break
+	    ;;
+    esac
+done
+
+( cd "$prefix" && $getroot stow "$@" )
