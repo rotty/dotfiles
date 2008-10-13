@@ -164,7 +164,8 @@ symbols (converted to as string, which is suffixed with \".el\")."
 						       (concat (symbol-name snippet) ".el")
 						     snippet)))))
       (if (file-readable-p file-name)
-	  (load-file file-name)))))
+	  (load-file file-name)
+	(message "Config snippet not found: %s" snippet)))))
 
 
 ;; Workaround for emacs22, see
