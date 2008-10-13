@@ -46,6 +46,8 @@
 (setq european-calender-style t)
 (setq diary-file "~/.diary.planner")
 
+(which-function-mode 1)
+
 (setq custom-file "~/.emacs.d/.customized")
 (if (file-readable-p custom-file)
   (load-file (expand-file-name custom-file)))
@@ -174,7 +176,8 @@ symbols (converted to as string, which is suffixed with \".el\")."
 
 ;; Desktop configuration
 (setq history-length 250)
-(add-to-list 'desktop-globals-to-save 'file-name-history)
+(dolist (var '(file-name-history command-history))
+  (add-to-list 'desktop-globals-to-save var))
 
 ;; Desktop autosave (http://www.emacswiki.org/cgi-bin/wiki/DeskTop)
 (setq *foo-desktop-dir* (expand-file-name "~/.emacs.d/desktop/"))
