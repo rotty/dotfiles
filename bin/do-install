@@ -29,7 +29,11 @@ echo -n "Install $project_name $location? [y/n] "
 read answer
 if [ "$answer" = y ]; then
     if [ -x configure ]; then
-	./configure "$prefix_arg" && make && $getroot make install && do-stow $args "$project_name"
+	set -e
+	if ! [ -f Makefile ]; then
+	    ./configure "$prefix_arg"
+	fi 
+	make && $getroot make install && do-stow $args "$project_name"
     elif [ -x autogen.sh ]; then
 	./autogen.sh "$prefix_arg" && make && $getroot make install && do-stow $args "$project_name"
     elif [ -x setup.py ]; then
