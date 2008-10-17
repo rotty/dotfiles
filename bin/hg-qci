@@ -1,0 +1,62 @@
+#!/bin/sh
+
+set -e
+
+PROGNAME="hg-qci"
+
+die () {
+    echo "$PROGNAME: error: $@"
+    exit 1
+}
+
+root=`hg root`
+series="$root/.hg/patches/series"
+if hg qtop > /dev/null; then
+    top=`hg qtop`
+else
+    top=
+fi
+
+hg qpop -a
+if [ -f "$series" ] && [ -d .svn-checkout ]; then
+    first_patch=`grep -v '^local-' "$series" | head -n 1`
+    cd .svn-checkout
+    [ `svn status -q | wc -l` -eq 0 ] || die "SVN checkout not clean"
+    echo "* applying $first_patch to SVN checkout"
+    patch --dry-run -p1 < $root/.hg/patches/$first_patch > /dev/null || die "patch does not apply"
+    patch -p1 < $root/.hg/patches/$first_patch
+    svn diff | diffstat
+    echo -n "commit this to SVN [yes/no]? "
+    read answer
+    if [ "$answer" = yes ]; then
+	echo "* committing to SVN"
+	if svn commit "$@"; then
+	    patch_committed=yes
+	else
+	    patch_committed=no
+	fi
+    else
+	echo "* dropping out to shell; type 'exit' or CTRL-D if you have committed, 'exit 1' otherwise"
+	if $SHELL; then
+	    patch_committed=yes
+	else
+	    patch_committed=no
+	fi
+    fi
+    if [ "$patch_committed" = yes ]; then
+        # remove the first non-local patch from the series
+	echo "* removing $first_patch from series"
+	mv "$series" "${series}.orig"
+	grep '^local-' "${series}.orig" >> "${series}"
+	grep -Ev "^(local-|$first_patch)" "${series}.orig" >> "$series"
+    else
+	# revert the patch
+	echo "* reverting SVN checkout back to clean state"
+	svn revert -R .
+    fi
+    cd ..
+fi
+
+if [ "$top" != "" ]; then    
+    hg qgoto $top
+fi
