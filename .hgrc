@@ -1,0 +1,6 @@
+[diff]
+git=1
+nodates=1
+
+[extensions]
+hgext.record=

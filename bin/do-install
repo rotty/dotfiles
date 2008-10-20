@@ -5,25 +5,24 @@
 
 project_name="`basename $PWD`"
 
-if [ -n "$1" ]; then
-    case "$1" in
-	--system)
-	    args=""
-	    location="system-wide"
-	    prefix_arg="--prefix=/usr/local/stow/$project_name"
-	    getroot="sudo"
-	    ;;
-	*)
-	    echo "do-install: unknown option $1"
-	    exit 1
-	    ;;
-    esac
-else
-    getroot=""
-    args="--user"
-    location="user-locally"
-    prefix_arg="--prefix=$HOME/.system/stow/$project_name"
-fi
+getroot=""
+stow_args="--user"
+location="user-locally"
+prefix_arg="--prefix=$HOME/.system/stow/$project_name"
+
+case "$1" in
+    --system)
+	shift
+	stow_args=""
+	location="system-wide"
+	prefix_arg="--prefix=/usr/local/stow/$project_name"
+	getroot="sudo"
+	break
+	;;
+    *)
+	break
+	;;
+esac
 
 echo -n "Install $project_name $location? [y/n] "
 read answer
@@ -31,11 +30,13 @@ if [ "$answer" = y ]; then
     if [ -x configure ]; then
 	set -e
 	if ! [ -f Makefile ]; then
-	    ./configure "$prefix_arg"
+	    ./configure "$prefix_arg" "$@"
 	fi 
-	make && $getroot make install && do-stow $args "$project_name"
+	make && $getroot make install && do-stow $stow_args "$project_name"
     elif [ -x autogen.sh ]; then
-	./autogen.sh "$prefix_arg" && make && $getroot make install && do-stow $args "$project_name"
+	./autogen.sh "$prefix_arg" "$@" \
+	    && make && $getroot make install \
+	    && do-stow $stow_args "$project_name"
     elif [ -x setup.py ]; then
 	python setup.py build && $getroot python setup.py install "$prefix_arg"
     else
