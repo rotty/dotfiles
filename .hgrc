@@ -3,4 +3,8 @@ git=1
 nodates=1
 
 [extensions]
-hgext.record=
+hgext.record =
+alias = 
+
+[alias]
+qstatus = status --rev -2:.
