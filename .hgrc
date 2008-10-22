@@ -3,4 +3,6 @@ git=1
 nodates=1
 
 [extensions]
-hgext.record=
+hgext.record =
+hgext.mq =
+#forest = ~/.hgext/forest.py
