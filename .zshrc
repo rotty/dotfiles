@@ -69,14 +69,14 @@ setopt INTERACTIVE_COMMENTS
 setopt NO_HUP
 setopt NO_NOMATCH
 
-if which dircolors > /dev/null; then
+if command -v dircolors > /dev/null; then
   eval `dircolors`
 fi
 alias ls='ls --color=auto'
 alias ll='ls -l'
 alias pd='pushd'
 
-if which lesspipe > /dev/null; then
+if command -v lesspipe > /dev/null; then
   eval `lesspipe`
 fi
 export LESS="-M"
