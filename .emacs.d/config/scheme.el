@@ -23,7 +23,7 @@
 
 (defun my-lispy-mode-hook ()
   (enable-paredit-mode)
-  
+  (set (make-local-variable 'comment-add) 1)
   (local-set-key (kbd "M-/") (make-hippie-expand-function
 			      '(try-my-dabbrev-substring
 				try-expand-dabbrev-visible
