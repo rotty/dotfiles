@@ -44,6 +44,20 @@
   ;; IMPLEMENTME
   t)
 
+(defvar ikarus-filepos-regex "&trace: .*(char \\([0-9]+\\) of \\([^)]+\\))")
+
+(defun ikarus-visit-last-trace ()
+  (interactive)
+  (let ((found-p (save-excursion
+		   (re-search-backward ikarus-filepos-regex nil t))))
+    (cond (found-p
+	   (let ((filename (match-string 2))
+		 (pos (string-to-number (match-string 1))))
+	     (find-file-other-window filename)
+	     (goto-char pos)))
+	  (t
+	   (message "no trace file position found")))))
+
 (dolist (hint
 	 '((with-test-prefix 1)
 	   (with-interaction-environment 1)

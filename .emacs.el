@@ -29,7 +29,7 @@
 (global-set-key [end] 'end-of-line)
 
 (global-set-key [f11] 'goto-line)
-(global-set-key [f12] 'toggle-transient-mark-mode)
+(global-set-key [f12] 'goto-char)
 
 ;; Enhanced buffer switching
 (iswitchb-mode t)
@@ -172,6 +172,11 @@ symbols (converted to as string, which is suffixed with \".el\")."
 ;; http://groups.google.com/group/gnu.emacs.help/msg/d6237fdac86a7634
 (provide 'sb-info)
 
+
+(defun new-term ()
+  (interactive)
+  (term "/bin/zsh")
+  (rename-uniquely))
 
 
 ;; Command-line handling
