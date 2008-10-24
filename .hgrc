@@ -4,7 +4,10 @@ nodates=1
 
 [extensions]
 hgext.record =
+hgext.mq =
 alias = 
+#forest = ~/.hgext/forest.py
 
 [alias]
 qstatus = status --rev -2:.
+
