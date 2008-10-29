@@ -44,15 +44,15 @@
   ;; IMPLEMENTME
   t)
 
-(defvar ikarus-filepos-regex "&trace: .*(char \\([0-9]+\\) of \\([^)]+\\))")
+(setq ikarus-filepos-regex "&source-information:\n\\s-*file-name: \"\\([^\"]+\\)\"\n\\s-*character: \\([0-9]+\\)")
 
 (defun ikarus-visit-last-trace ()
   (interactive)
   (let ((found-p (save-excursion
 		   (re-search-backward ikarus-filepos-regex nil t))))
     (cond (found-p
-	   (let ((filename (match-string 2))
-		 (pos (string-to-number (match-string 1))))
+	   (let ((filename (match-string 1))
+		 (pos (string-to-number (match-string 2))))
 	     (find-file-other-window filename)
 	     (goto-char pos)))
 	  (t
