@@ -122,6 +122,7 @@
 	   (trace-define 1)
 	   (trace-lambda 2)
 	   (and-let* 1)
+	   (send 1)
 	   (let-attributes 3)
 	   (let-accessors 2)
 	   (let-ginstance-fields 2)))
