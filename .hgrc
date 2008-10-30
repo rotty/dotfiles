@@ -11,3 +11,6 @@ alias =
 [alias]
 qstatus = status --rev -2:.
 
+[ui]
+
+ignore = ~/etc/hgignore
