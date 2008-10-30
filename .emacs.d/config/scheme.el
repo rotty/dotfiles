@@ -135,7 +135,8 @@
 	   (let-callouts 2)
 	   (and-let* 1)
 	   (let-attributes 3)
-	   (let-accessors 2)))
+	   (let-accessors 2)
+	   (let-ginstance-fields 2)))
   (put (car hint) 'scheme-indent-function (cadr hint)))
 
 (eval-after-load "scheme" '(progn
