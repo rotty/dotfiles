@@ -35,6 +35,8 @@
 (dolist (hook '(emacs-lisp-mode-hook lisp-mode-hook scheme-mode-hook))
   (add-hook hook 'my-lispy-mode-hook))
 
+(define-key scheme-mode-map (kbd "C-c M-i") 'ikarus-run-script)
+
 (put 'scheme48-package 'safe-local-variable 'symbolp)
 
 (setq quack-pltish-keywords-to-fontify
@@ -57,6 +59,15 @@
 	     (goto-char pos)))
 	  (t
 	   (message "no trace file position found")))))
+
+(defun ikarus-run-script (filename)
+  (interactive (list (read-file-name "R6RS script to launch ikarus on: "
+				     nil (buffer-file-name))))
+  
+  (let* ((buffer (get-buffer-create "*ikarus*"))
+	 (process (start-process "ikarus" buffer
+				 "ikarus" "--r6rs-script" (expand-file-name filename))))
+    (message "Ikarus started on %S" filename)))
 
 (dolist (hint
 	 '((with-test-prefix 1)
@@ -121,6 +132,7 @@
 	   (library 1)
 	   (trace-define 1)
 	   (trace-lambda 2)
+	   (let-callouts 2)
 	   (and-let* 1)
 	   (send 1)
 	   (let-attributes 3)
