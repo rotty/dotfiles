@@ -35,6 +35,8 @@
 (dolist (hook '(emacs-lisp-mode-hook lisp-mode-hook scheme-mode-hook))
   (add-hook hook 'my-lispy-mode-hook))
 
+(add-hook 'scheme-mode-hook 'ikarus-script-setup-buffer)
+
 (define-key scheme-mode-map (kbd "C-c M-i") 'ikarus-run-script)
 
 (put 'scheme48-package 'safe-local-variable 'symbolp)
@@ -60,14 +62,68 @@
 	  (t
 	   (message "no trace file position found")))))
 
-(defun ikarus-run-script (filename)
-  (interactive (list (read-file-name "R6RS script to launch ikarus on: "
-				     nil (buffer-file-name))))
-  
-  (let* ((buffer (get-buffer-create "*ikarus*"))
-	 (process (start-process "ikarus" buffer
-				 "ikarus" "--r6rs-script" (expand-file-name filename))))
-    (message "Ikarus started on %S" filename)))
+(setq ikarus-script-buffer-name "*ikarus-script*")
+
+;; (defun ikarus-run-script (filename &rest args)
+;;   (interactive (append (list (read-file-name "R6RS script to launch ikarus on: "
+;; 					     nil (buffer-file-name)))
+;; 		       (split-string (read-string "Script arguments: "))))
+;;   (let ((buffer (get-buffer-create ikarus-script-buffer-name))
+;; 	(cmd-line (append (list "ikarus" "--r6rs-script") (expand-file-name filename) args)))
+;;     (switch-to-buffer buffer)
+;;     (unless (current-local-map)
+;;       (use-local-map ikarus-script-keymap))
+;;     (let ((proc (get-buffer-process (current-buffer))))
+;;       (if proc
+;; 	  (if (or (not (eq (process-status proc) 'run))
+;; 		  (yes-or-no-p
+;; 		   (format "An ikarus script is running; kill it? ")))
+;; 	      (condition-case ()
+;; 		  (progn
+;; 		    (interrupt-process proc)
+;; 		    (sit-for 1)
+;; 		    (delete-process proc))
+;; 		(error nil))
+;; 	    (error "Cannot have two processes in `%s' at once" (buffer-name))))
+;;       (buffer-disable-undo))
+;;     (set (make-local-variable 'ikarus-script-command-line) cmd-line)
+;;     (let ((process (apply 'start-process "ikarus" buffer cmd-line)))
+;;       (message "Ikarus script started: %S %S" filename  (mapconcat 'identity args " ")))))
+
+(setq ikarus-script-error-regexp-alist
+      '(("&source-information:\n\\s-*file-name: \"\\([^\"]+\\)\"\n\\s-*character: \\([0-9]+\\)"
+	 1 ikarus-script-no-line-number)))
+
+(defun ikarus-script-no-line-number (filename column)
+  (message "XXX: %S %S" filename column)
+  (list (point-marker) filename 1 (and column (string-to-number column))))
+
+(defun ikarus-run-script (filename &rest args)
+  (interactive (append (list (read-file-name "R6RS script to launch ikarus on: "
+					     nil (buffer-file-name)))
+		       (split-string (read-string "Script arguments: "))))
+  (let ((compilation-error-regexp-alist ikarus-script-error-regexp-alist))
+    (let ((buffer (compilation-start (concat "ikarus --r6rs-script "
+					     (mapconcat 'identity (cons filename args) " ")))))
+      (with-current-buffer buffer
+	(use-local-map ikarus-script-keymap)
+	buffer))))
+
+(defun ikarus-script-setup-buffer ()
+  (set (make-local-variable 'ikarus-run-script-command-line)
+       (list (buffer-file-name))))
+
+(defun ikarus-rerun-script ()
+  (interactive)
+  (apply 'ikarus-run-script (or (and compilation-arguments 
+				     (cddr (split-string (car compilation-arguments))))
+				`(,(eval ikarus-run-script-command-line)))))
+
+(setq ikarus-script-keymap (let ((keys (make-sparse-keymap)))
+			     (set-keymap-parent keys compilation-mode-map)
+			     (define-key keys (kbd "C-c C-i") 'ikarus-run-script)
+			     (define-key keys (kbd "C-c C-r") 'ikarus-rerun-script)
+			     keys))
 
 (dolist (hint
 	 '((with-test-prefix 1)
