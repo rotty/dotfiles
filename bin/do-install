@@ -9,23 +9,40 @@ getroot=""
 stow_args="--user"
 location="user-locally"
 prefix="$HOME/.system/stow/$project_name"
+ask=yes
 
-case "$1" in
-    --system)
-	shift
-	stow_args=""
-	location="system-wide"
-	prefix="/usr/local/stow/$project_name"
-	getroot="sudo"
+done=false
+while ! [ -z "$1" ]; do
+    case "$1" in
+	--system)
+	    shift
+	    stow_args=""
+	    location="system-wide"
+	    prefix="/usr/local/stow/$project_name"
+	    getroot="sudo"
+	    break
+	    ;;
+	--yes)
+	    shift
+	    ask=no
+	    ;;
+	*)
+	    done=true
+	    break
+	    ;;
+    esac
+    if [ "$done" = true ]; then
 	break
-	;;
-    *)
-	break
-	;;
-esac
+    fi
+done
 
-echo -n "Install $project_name $location? [y/n] "
-read answer
+
+if [ "$ask" = yes ]; then
+    echo -n "Install $project_name $location? [y/n] "
+    read answer
+else
+    answer=y
+fi
 if [ "$answer" = y ]; then
     if [ -d "$prefix" ]; then
 	do-stow $stow_args -D "$project_name"
