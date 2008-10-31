@@ -35,11 +35,31 @@
 (dolist (hook '(emacs-lisp-mode-hook lisp-mode-hook scheme-mode-hook))
   (add-hook hook 'my-lispy-mode-hook))
 
+
+;; ikarus-script
 (add-hook 'scheme-mode-hook 'ikarus-script-setup-buffer)
 
-(define-key scheme-mode-map (kbd "C-c i") 'ikarus-run-script)
-(define-key scheme-mode-map (kbd "C-c r") 'ikarus-rerun-script)
+(eval-after-load 'scheme
+  '(progn
+     (define-key scheme-mode-map (kbd "C-c i") 'ikarus-run-script)
+     (define-key scheme-mode-map (kbd "C-c r") 'ikarus-rerun-script)))
 
+
+;; scheme-complete
+(autoload 'scheme-smart-complete "scheme-complete" nil t)
+(autoload 'scheme-complete-or-indent "scheme-complete" nil t)
+(autoload 'scheme-get-current-symbol-info "scheme-complete" nil t)
+
+(eval-after-load 'scheme
+  '(progn (define-key scheme-mode-map "\t" 'scheme-complete-or-indent)))
+
+(add-hook 'scheme-mode-hook
+   (lambda ()
+     (make-local-variable 'eldoc-documentation-function)
+     (setq eldoc-documentation-function 'scheme-get-current-symbol-info)
+     (eldoc-mode)))
+
+
 
 (put 'scheme48-package 'safe-local-variable 'symbolp)
 
