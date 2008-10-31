@@ -37,137 +37,14 @@
 
 (add-hook 'scheme-mode-hook 'ikarus-script-setup-buffer)
 
-(define-key scheme-mode-map (kbd "C-c M-i") 'ikarus-run-script)
+(define-key scheme-mode-map (kbd "C-c i") 'ikarus-run-script)
+(define-key scheme-mode-map (kbd "C-c r") 'ikarus-rerun-script)
+
 
 (put 'scheme48-package 'safe-local-variable 'symbolp)
 
 (setq quack-pltish-keywords-to-fontify
       '("and" "begin" "call-with-current-continuation" "call-with-input-file" "call-with-output-file" "call/cc" "case" "case-lambda" "compound-unit/sig" "cond" "condition" "cond-expand" "define" "define/optional" "define-condition-type" "define-macro" "define-module" "define-public" "define-signature" "define-syntax" "define-syntax-set" "define-values" "define-values/invoke-unit/sig" "define-method" "define-generic" "define-class" "delay" "do" "else" "exit-handler" "guard" "if" "import" "lambda" "let" "let*" "let*-values" "let+" "let-keywords" "let-optional" "let-syntax" "let-values" "let/ec" "letrec" "letrec-values" "letrec-syntax" "library" "match-lambda" "match-lambda*" "match-let" "match-let*" "match-letrec" "match-define" "mixin" "opt-lambda" "or" "override" "override*" "namespace-variable-bind/invoke-unit/sig" "parameterize" "private" "private*" "protect" "provide" "provide-signature-elements" "provide/contract" "public" "public*" "quote" "receive" "rename" "require" "require-for-syntax" "send" "send*" "setter" "set!" "set!-values" "signature->symbols" "super-instantiate" "syntax-case" "syntax-case*" "syntax-error" "syntax-rules" "unit/sig" "unless" "when" "with-handlers" "with-method" "with-syntax"))
-
-
-;; Ikarus script support
-
-(defun ikarus-toggle-trace ()
-  ;; IMPLEMENTME
-  t)
-
-(setq ikarus-filepos-regex "&source-information:\n\\s-*file-name: \"\\([^\"]+\\)\"\n\\s-*character: \\([0-9]+\\)")
-
-(defun ikarus-visit-last-trace ()
-  (interactive)
-  (let ((found-p (save-excursion
-		   (re-search-backward ikarus-filepos-regex nil t))))
-    (cond (found-p
-	   (let ((filename (match-string 1))
-		 (pos (string-to-number (match-string 2))))
-	     (find-file-other-window filename)
-	     (goto-char pos)))
-	  (t
-	   (message "no trace file position found")))))
-
-(setq ikarus-script-buffer-name "*ikarus-script*")
-
-;; (defun ikarus-run-script (filename &rest args)
-;;   (interactive (append (list (read-file-name "R6RS script to launch ikarus on: "
-;; 					     nil (buffer-file-name)))
-;; 		       (split-string (read-string "Script arguments: "))))
-;;   (let ((buffer (get-buffer-create ikarus-script-buffer-name))
-;; 	(cmd-line (append (list "ikarus" "--r6rs-script") (expand-file-name filename) args)))
-;;     (switch-to-buffer buffer)
-;;     (unless (current-local-map)
-;;       (use-local-map ikarus-script-keymap))
-;;     (let ((proc (get-buffer-process (current-buffer))))
-;;       (if proc
-;; 	  (if (or (not (eq (process-status proc) 'run))
-;; 		  (yes-or-no-p
-;; 		   (format "An ikarus script is running; kill it? ")))
-;; 	      (condition-case ()
-;; 		  (progn
-;; 		    (interrupt-process proc)
-;; 		    (sit-for 1)
-;; 		    (delete-process proc))
-;; 		(error nil))
-;; 	    (error "Cannot have two processes in `%s' at once" (buffer-name))))
-;;       (buffer-disable-undo))
-;;     (set (make-local-variable 'ikarus-script-command-line) cmd-line)
-;;     (let ((process (apply 'start-process "ikarus" buffer cmd-line)))
-;;       (message "Ikarus script started: %S %S" filename  (mapconcat 'identity args " ")))))
-
-(setq ikarus-script-error-regexp-alist
-      '(("&source-information:\n\\s-*file-name: \"\\([^\"]+\\)\"\n\\s-*character: \\([0-9]+\\)"
-	 1 2)))
-
-(defun ikarus-script-no-line-number (filename column)
-  (message "XXX: %S %S" filename column)
-  (list (point-marker) filename 1 (and column (string-to-number column))))
-
-(defun ikarus-run-script (filename &rest args)
-  (interactive (append (list (read-file-name "R6RS script to launch ikarus on: "
-					     nil (buffer-file-name)))
-		       (split-string (read-string "Script arguments: "))))
-  (flet ((compilation-mode-font-lock-keywords () (ikarus-script-mode-font-lock-keywords)))
-    (compilation-start (concat "ikarus --r6rs-script "
-			       (mapconcat 'identity (cons filename args) " "))
-		       'ikarus-script-mode)))
-
-(defun ikarus-script-setup-buffer ()
-  (set (make-local-variable 'ikarus-run-script-command-line)
-       (list (buffer-file-name))))
-
-(defun ikarus-rerun-script ()
-  (interactive)
-  (apply 'ikarus-run-script (or (and compilation-arguments 
-				     (cddr (split-string (car compilation-arguments))))
-				`(,(eval ikarus-run-script-command-line)))))
-
-(defun ikarus-script-mode-font-lock-keywords ()
-  "Return expressions to highlight in Ikarus-Script mode."
-  (append
-   (mapcar
-    (lambda (item)
-      (if (symbolp item)
-	  (setq item (cdr (assq item
-				compilation-error-regexp-alist-alist))))
-      (let ((file (nth 1 item))
-	    (char (nth 2 item)))
-	`(,(nth 0 item)
-
-	  ,@(when (integerp file)
-	      `((,file compilation-error-face)))
-
-	  ,@(when char
-	      `((,char compilation-line-face nil t)))
-	  
-	  (0
-	   (ikarus-script-error-properties ',file ,char)
-	   append))))			; for compilation-message-face
-    ikarus-script-error-regexp-alist)
-   compilation-mode-font-lock-keywords))
-
-(defun ikarus-script-error-properties (file char)
-  (message "XXX: %S %S" file char)
-  (unless (< (next-single-property-change (match-beginning 0) 'directory nil (point))
-	     (point))
-    ;; All of these fields are optional, get them only if we have an index, and
-    ;; it matched some part of the message.
-    (and char
-	 (setq char (match-string-no-properties char))
-	 (setq char (string-to-number char)))
-    (ikarus-script-internal-error-properties file char)))
-
-(defun ikarus-script-internal-error-properties (file char)
-  `(face ,compilation-message-face
-	 message (,char error nil)
-	 help-echo ,(if char
-			"mouse-2: visit this file and position"
-		      "mouse-2: visit this file")
-	 keymap compilation-button-map
-	 mouse-face highlight))
-
-(define-compilation-mode ikarus-script-mode "Ikarus-Script"
-  "Specialization of compilation-mode for running Ikarus Scheme scripts"
-  (local-set-key (kbd "C-c C-i") 'ikarus-run-script)
-  (local-set-key (kbd "C-c C-r") 'ikarus-rerun-script))
 
 
 
@@ -241,6 +118,8 @@
 	   (let-accessors 2)
 	   (let-ginstance-fields 2)))
   (put (car hint) 'scheme-indent-function (cadr hint)))
+
+(require 'ikarus-script)
 
 (eval-after-load "scheme" '(progn
 
