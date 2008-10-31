@@ -1,1 +1,11 @@
 *.elc
+/.cache
+/mess
+/gnome
+/.darcs/cache
+/.conkeror.mozdev.org*
+/.emacs.d/lisp/darcsum
+/.plt-scheme/*/doc
+/.quack/srfi
+/.zsh/cache
+/.emacs.d/desktop
