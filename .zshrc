@@ -19,7 +19,6 @@ esac
 
 alias la='ls -lA'
 alias hr='hash -r'
-alias mq='hg -R $(hg root)/.hg/patches'
 
 alias svn-cd='svn diff | colordiff | less -R'
 

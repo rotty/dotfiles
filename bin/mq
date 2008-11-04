@@ -1,0 +1,26 @@
+#!/bin/sh
+
+die () {
+    echo "$PROGNAME: error: $@"
+    exit 1
+}
+
+patches=""
+if hg root > /dev/null 2>&1; then
+   root=`hg root`
+   if [ -d "$root/.hg/patches" ]; then
+       patches="$root/.hg/patches"
+   fi
+fi
+
+if [ -z "$patches" ] && [ -d patches ]; then
+    patches="patches"
+elif [ -z "$patches" ]; then
+    die "did not find patches directory"
+fi
+
+if ! [ -d "$patches/.hg" ]; then
+    die "patch directory $patches not managed by mercurial"
+fi
+
+exec hg -R "$patches" "$@"
