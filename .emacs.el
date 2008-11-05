@@ -179,47 +179,34 @@ symbols (converted to as string, which is suffixed with \".el\")."
   (rename-uniquely))
 
 
-;; Command-line handling
-(defvar use-desktop t)
-
-(add-to-list 'command-line-functions
-	     (lambda ()
-	       (cond ((string= argi "--no-desktop")
-		      (setq use-desktop nil)
-		      t)
-		     (t nil))))
-
-
 
 ;; Enable desktop saving on exit; also loads the desktop on startup, so goes last
-(cond (use-desktop
-       (desktop-save-mode 1)
+(desktop-save-mode 1)
 
-       ;; Desktop configuration
-       (setq history-length 250)
-       (dolist (var '(file-name-history command-history))
-	 (add-to-list 'desktop-globals-to-save var))
+(setq history-length 250)
+(dolist (var '(file-name-history command-history))
+  (add-to-list 'desktop-globals-to-save var))
 
-       ;; Desktop autosave (http://www.emacswiki.org/cgi-bin/wiki/DeskTop)
-       (setq *foo-desktop-dir* (expand-file-name "~/.emacs.d/desktop/"))
+;; Desktop autosave (http://www.emacswiki.org/cgi-bin/wiki/DeskTop)
+(setq *foo-desktop-dir* (expand-file-name "~/.emacs.d/desktop/"))
 
-       (setq desktop-dir *foo-desktop-dir*)
-       (setq desktop-path (list *foo-desktop-dir*))
+(setq desktop-dir *foo-desktop-dir*)
+(setq desktop-path (list *foo-desktop-dir*))
 
-       (setq *foo-desktop-file* (concat desktop-dir desktop-base-file-name))
+(setq *foo-desktop-file* (concat desktop-dir desktop-base-file-name))
 
-       (setq *foo-desktop-lock* (concat desktop-dir desktop-base-lock-name))
+(setq *foo-desktop-lock* (concat desktop-dir desktop-base-lock-name))
 
-       (defun desktop-in-use-p ()
-	 (and (file-exists-p *foo-desktop-file*)
-	      (file-exists-p *foo-desktop-lock*)))
+(defun desktop-in-use-p ()
+  (and (file-exists-p *foo-desktop-file*)
+       (file-exists-p *foo-desktop-lock*)))
 
-       (defun autosave-desktop ()
-	 (if (desktop-in-use-p)
-	     (desktop-save-in-desktop-dir)))
+(defun autosave-desktop ()
+  (if (desktop-in-use-p)
+      (desktop-save-in-desktop-dir)))
 
-       ;; Can be switched off with (cancel-timer *foo-desktop-saver-timer*)
-       (add-hook 'after-init-hook
-		 (lambda ()
-		   (setq *foo-desktop-saver-timer* 
-			 (run-with-timer 5 300 'autosave-desktop))))))
+;; Can be switched off with (cancel-timer *foo-desktop-saver-timer*)
+(add-hook 'after-init-hook
+	  (lambda ()
+	    (setq *foo-desktop-saver-timer* 
+		  (run-with-timer 5 300 'autosave-desktop))))
