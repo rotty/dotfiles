@@ -198,7 +198,8 @@ symbols (converted to as string, which is suffixed with \".el\")."
 (setq *foo-desktop-lock* (concat desktop-dir desktop-base-lock-name))
 
 (defun desktop-in-use-p ()
-  (and (file-exists-p *foo-desktop-file*)
+  (and desktop-save-mode
+       (file-exists-p *foo-desktop-file*)
        (file-exists-p *foo-desktop-lock*)))
 
 (defun autosave-desktop ()

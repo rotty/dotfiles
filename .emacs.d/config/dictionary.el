@@ -1,0 +1,1 @@
+(setq dictionary-server "localhost")
