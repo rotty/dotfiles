@@ -43,11 +43,15 @@
        (not (equal pd ".pc"))
        (quilt-p fn)))))
 
-(defun quilt-cmd (cmd &optional buf)
+(defun quilt-cmd (cmd &optional buf setup)
   "execute a quilt command at the top of the quilt tree for the given buffer"
-  (let* ((d default-directory))
+  (let ((d default-directory)
+	(buf (get-buffer-create buf)))
     (cd (quilt-dir))
     (shell-command (concat "quilt " cmd) buf)
+    (when setup
+      (with-current-buffer buf
+	(funcall setup)))
     (cd d)))
 
 (defun quilt-cmd-to-string (cmd)
@@ -197,7 +201,7 @@
   "Display diff of current changes"
   (interactive)
   (quilt-save)
-  (quilt-cmd "diff" "*diff*"))
+  (quilt-cmd "diff" "*diff*" (lambda () (diff-mode))))
 
 (defun quilt-new (f)
   "Create a new patch"
@@ -310,3 +314,5 @@
 (or (assq 'quilt-mode-map minor-mode-map-alist)
     (setq minor-mode-map-alist
 	  (cons (cons 'quilt-mode quilt-mode-map) minor-mode-map-alist)))
+
+(provide 'quilt)
