@@ -11,7 +11,10 @@ def fmt_unix_ts(dt):
                + float(elapsed.microseconds) / 1000000)
 
 def parse_unix_ts(s):
-    return EPOCH + datetime.timedelta(seconds=float(s))
+    return EPOCH + datetime.timedelta(seconds=float(s)), fmt_isodate
+
+def fmt_isodate(dt):
+    return dt.strftime("%Y-%m-%d %H:%M:%S")
 
 _parsers = [parse_unix_ts, "%Y-%m-%d"]
 def parse_time(x):
