@@ -178,6 +178,68 @@ symbols (converted to as string, which is suffixed with \".el\")."
   (term "/bin/zsh")
   (rename-uniquely))
 
+(defvar revert-some-buffers-action-alist
+  '((?\C-r
+     (lambda (buf)
+       (view-buffer buf
+		    (lambda (ignore)
+		      (exit-recursive-edit)))
+       (recursive-edit)
+       ;; Return nil to ask about BUF again.
+       nil)
+     "view this buffer")
+    (?d (lambda (buf)
+	  (save-window-excursion
+	    (diff-buffer-with-file buf))
+	  (view-buffer (get-buffer-create "*Diff*")
+		       (lambda (ignore) (exit-recursive-edit)))
+	  (recursive-edit)
+	  nil)
+	"view changes in this buffer"))
+  "ACTION-ALIST argument used in call to `map-y-or-n-p'.")
+
+;; Code/docstring taken from Emacs' `save-some-buffers' and hacked.
+(defun revert-some-buffers (&optional arg pred)
+  "Revert some modified file-visiting buffers.  Asks user about each one.
+You can answer `y' to revert, `n' not to revert, `C-r' to look at the
+buffer in question with `view-buffer' before deciding or `d' to
+view the differences using `diff-buffer-with-file'.
+
+Optional argument (the prefix) non-nil means revert all with no questions.
+Optional second argument PRED determines which buffers are considered:
+If PRED is nil, all the file-visiting buffers are considered.
+If PRED is t, then certain non-file buffers will also be considered.
+If PRED is a zero-argument function, it indicates for each buffer whether
+to consider it or not when called with that buffer current."
+  (interactive "P")
+  (save-window-excursion
+    (let (queried files-done)
+      ;; Ask about those buffers that merit it,
+      ;; and record the number thus reverted.
+      (setq files-done
+	    (map-y-or-n-p
+	     (function
+	      (lambda (buffer)
+		(and (not (buffer-modified-p buffer))
+		     (not (buffer-base-buffer buffer))
+		     (buffer-file-name buffer)
+		     (not (verify-visited-file-modtime buffer))
+		     (file-exists-p (buffer-file-name buffer))
+		     (or (not (functionp pred))
+			 (with-current-buffer buffer (funcall pred)))
+		     (if arg
+			 t
+		       (setq queried t)
+		       (format "Revert file %s? " (buffer-file-name buffer))))))
+	     (function
+	      (lambda (buffer)
+		(set-buffer buffer)
+		(revert-buffer 'ignore-auto 'dont-ask 'preserve-modes)))
+	     (buffer-list)
+	     '("buffer" "buffers" "save")
+	     revert-some-buffers-action-alist))
+      (or queried (> files-done 0)
+	  (message "(No files need reverting)")))))
 
 
 ;; Enable desktop saving on exit; also loads the desktop on startup, so goes last
