@@ -1,0 +1,22 @@
+#!/bin/sh
+
+INTERVAL=10
+while true; do
+    case "$1" in
+	-n) shift
+	    INTERVAL="$1"
+	    shift
+	    ;;
+	*)  break
+	    ;;
+    esac
+done
+
+while true; do
+    pids=`pgrep -d ' ' "$@"`
+    if [ -n "$pids" ]; then
+	echo "--------------- `date` ---------------"
+	ps -o pid,vsize,sz,args --pid "$pids"
+    fi
+    sleep $INTERVAL
+done
