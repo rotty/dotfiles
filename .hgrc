@@ -6,6 +6,9 @@ nodates=1
 hgext.record =
 hgext.mq =
 alias = 
+hgk=
+hgext.graphlog=
+
 #forest = ~/.hgext/forest.py
 
 [alias]
