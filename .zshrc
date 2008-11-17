@@ -1,7 +1,7 @@
 #
 # History
 #
-HISTFILE=$HOME/.zsh_history
+HISTFILE=$HOME/.private/zsh_history
 HISTSIZE=40000
 SAVEHIST=40000
 
