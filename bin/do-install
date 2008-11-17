@@ -32,15 +32,15 @@ if [ "$answer" = y ]; then
 	if ! [ -f Makefile ]; then
 	    ./configure "$prefix_arg" "$@"
 	fi 
-	make && $getroot make install && do-stow $stow_args "$project_name"
+	make && $getroot make install
     elif [ -x autogen.sh ]; then
 	./autogen.sh "$prefix_arg" "$@" \
-	    && make && $getroot make install \
-	    && do-stow $stow_args "$project_name"
-    elif [ -x setup.py ]; then
+	    && make && $getroot make install
+    elif [ -f setup.py ]; then
 	python setup.py build && $getroot python setup.py install "$prefix_arg"
     else
 	echo "no installable project found here, aborting."
 	exit 1
     fi
+    do-stow $stow_args "$project_name"
 fi
