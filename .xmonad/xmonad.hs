@@ -4,7 +4,7 @@ import XMonad.Hooks.EwmhDesktops
 import XMonad.Actions.CycleWS
 import XMonad.Prompt
 import XMonad.Prompt.Shell
-import XMonad.Actions.UpdatePointer
+--import XMonad.Actions.UpdatePointer
 import XMonad.Actions.MouseGestures
 
 import qualified XMonad.StackSet as W
@@ -54,10 +54,11 @@ gestures = M.fromList $
            ]
 
 main = xmonad $ defaultConfig 
-       { manageHook       = manageDocks <+> manageHook defaultConfig
-       , logHook          = ewmhDesktopsLogHook >> updatePointer Nearest
-       , layoutHook       = ewmhDesktopsLayout $ avoidStruts $ layoutHook defaultConfig
-       , modMask          = mod4Mask
-       , keys             = \c -> myKeys c `M.union` keys defaultConfig c
-       , mouseBindings    = \c -> myMouse c `M.union` (mouseBindings defaultConfig c)
+       { manageHook        = manageDocks <+> manageHook defaultConfig
+       , logHook           = ewmhDesktopsLogHook -- >> updatePointer Nearest
+       , layoutHook        = ewmhDesktopsLayout $ avoidStruts $ layoutHook defaultConfig
+       , modMask           = mod4Mask
+       , keys              = \c -> myKeys c `M.union` keys defaultConfig c
+       , mouseBindings     = \c -> myMouse c `M.union` (mouseBindings defaultConfig c)
+       , focusFollowsMouse = False
        }
