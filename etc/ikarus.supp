@@ -1,0 +1,51 @@
+{
+   Ikarus exec_code 1
+   Memcheck:Value4
+   fun:ik_exec_code
+   fun:ik_fasl_load
+   fun:ikarus_main
+   fun:main
+}
+
+{
+   Ikarus exec_code 2
+   Memcheck:Addr4
+   fun:ik_exec_code
+   fun:ik_fasl_load
+   fun:ikarus_main
+   fun:main
+}
+
+{
+   Ikarus collect 1
+   Memcheck:Cond
+   fun:add_object_proc
+   fun:collect_stack
+   fun:ik_collect
+}
+
+{
+   Ikarus collect 2
+   Memcheck:Value4
+   fun:add_object_proc
+   fun:collect_stack
+   fun:ik_collect
+}
+
+{
+   Ikarus collect 3
+   Memcheck:Cond
+   fun:memcpy
+   fun:add_object_proc
+   fun:collect_stack
+   fun:ik_collect
+}
+
+{
+   Ikarus collect 4
+   Memcheck:Value4
+   fun:memcpy
+   fun:add_object_proc
+   fun:collect_stack
+   fun:ik_collect
+}

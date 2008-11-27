@@ -35,14 +35,38 @@
 (dolist (hook '(emacs-lisp-mode-hook lisp-mode-hook scheme-mode-hook))
   (add-hook hook 'my-lispy-mode-hook))
 
+
+;; ikarus-script
+(add-hook 'scheme-mode-hook 'ikarus-script-setup-buffer)
+
+(eval-after-load 'scheme
+  '(progn
+     (define-key scheme-mode-map (kbd "C-c i") 'ikarus-run-script)
+     (define-key scheme-mode-map (kbd "C-c r") 'ikarus-rerun-script)))
+
+
+;; scheme-complete
+(autoload 'scheme-smart-complete "scheme-complete" nil t)
+(autoload 'scheme-complete-or-indent "scheme-complete" nil t)
+(autoload 'scheme-get-current-symbol-info "scheme-complete" nil t)
+
+(eval-after-load 'scheme
+  '(progn (define-key scheme-mode-map "\t" 'scheme-complete-or-indent)))
+
+(add-hook 'scheme-mode-hook
+   (lambda ()
+     (make-local-variable 'eldoc-documentation-function)
+     (setq eldoc-documentation-function 'scheme-get-current-symbol-info)
+     (eldoc-mode)))
+
+
+
 (put 'scheme48-package 'safe-local-variable 'symbolp)
 
 (setq quack-pltish-keywords-to-fontify
       '("and" "begin" "call-with-current-continuation" "call-with-input-file" "call-with-output-file" "call/cc" "case" "case-lambda" "compound-unit/sig" "cond" "condition" "cond-expand" "define" "define/optional" "define-condition-type" "define-macro" "define-module" "define-public" "define-signature" "define-syntax" "define-syntax-set" "define-values" "define-values/invoke-unit/sig" "define-method" "define-generic" "define-class" "delay" "do" "else" "exit-handler" "guard" "if" "import" "lambda" "let" "let*" "let*-values" "let+" "let-keywords" "let-optional" "let-syntax" "let-values" "let/ec" "letrec" "letrec-values" "letrec-syntax" "library" "match-lambda" "match-lambda*" "match-let" "match-let*" "match-letrec" "match-define" "mixin" "opt-lambda" "or" "override" "override*" "namespace-variable-bind/invoke-unit/sig" "parameterize" "private" "private*" "protect" "provide" "provide-signature-elements" "provide/contract" "public" "public*" "quote" "receive" "rename" "require" "require-for-syntax" "send" "send*" "setter" "set!" "set!-values" "signature->symbols" "super-instantiate" "syntax-case" "syntax-case*" "syntax-error" "syntax-rules" "unit/sig" "unless" "when" "with-handlers" "with-method" "with-syntax"))
 
-(defun ikarus-toggle-trace ()
-  ;; IMPLEMENTME
-  t)
+
 
 (dolist (hint
 	 '((with-test-prefix 1)
@@ -107,10 +131,15 @@
 	   (library 1)
 	   (trace-define 1)
 	   (trace-lambda 2)
+	   (let-callouts 2)
 	   (and-let* 1)
+	   (send 1)
 	   (let-attributes 3)
-	   (let-accessors 2)))
+	   (let-accessors 2)
+	   (let-ginstance-fields 2)))
   (put (car hint) 'scheme-indent-function (cadr hint)))
+
+(require 'ikarus-script)
 
 (eval-after-load "scheme" '(progn
 

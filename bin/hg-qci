@@ -10,6 +10,7 @@ die () {
 }
 
 root=`hg root`
+svncheckout="$root/.svn-checkout"
 series="$root/.hg/patches/series"
 if hg qtop > /dev/null; then
     top=`hg qtop`
@@ -18,9 +19,9 @@ else
 fi
 
 hg qpop -a
-if [ -f "$series" ] && [ -d .svn-checkout ]; then
+if [ -f "$series" ] && [ -d "$svncheckout" ]; then
     first_patch=`grep -v '^local-' "$series" | head -n 1`
-    cd .svn-checkout
+    cd $svncheckout
     [ `svn status -q | wc -l` -eq 0 ] || die "SVN checkout not clean"
     echo "* applying $first_patch to SVN checkout"
     patch --dry-run -p1 < $root/.hg/patches/$first_patch > /dev/null || die "patch does not apply"

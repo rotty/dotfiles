@@ -4,7 +4,16 @@ nodates=1
 
 [extensions]
 hgext.record =
+hgext.mq =
 alias = 
+hgk=
+hgext.graphlog=
+
+#forest = ~/.hgext/forest.py
 
 [alias]
 qstatus = status --rev -2:.
+
+[ui]
+
+ignore = ~/etc/hgignore

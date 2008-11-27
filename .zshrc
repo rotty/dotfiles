@@ -1,7 +1,7 @@
 #
 # History
 #
-HISTFILE=$HOME/.zsh_history
+HISTFILE=$HOME/.private/zsh_history
 HISTSIZE=40000
 SAVEHIST=40000
 
@@ -19,7 +19,6 @@ esac
 
 alias la='ls -lA'
 alias hr='hash -r'
-alias mq='hg -R $(hg root)/.hg/patches'
 
 alias svn-cd='svn diff | colordiff | less -R'
 
@@ -70,14 +69,14 @@ setopt INTERACTIVE_COMMENTS
 setopt NO_HUP
 setopt NO_NOMATCH
 
-if which dircolors > /dev/null; then
+if command -v dircolors > /dev/null; then
   eval `dircolors`
 fi
 alias ls='ls --color=auto'
 alias ll='ls -l'
 alias pd='pushd'
 
-if which lesspipe > /dev/null; then
+if command -v lesspipe > /dev/null; then
   eval `lesspipe`
 fi
 export LESS="-M"
@@ -102,15 +101,6 @@ bindkey "^[[1;5C" forward-word		# xterm XFree86 4.3
 bindkey "^[O5D"   backward-word		# screen
 bindkey "^[O5C"   forward-word		# screen
 
-#
-# ssh host completion
-#
-zstyle -e ':completion:*:(ssh|scp):*' hosts 'reply=(
-    ${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) \
-		     /dev/null)"}%%[# ]*}//,/ }
-    ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*}
-    )'
-
 # mess support
 function mess {
   DIR=`~/bin/mess.rb "$@"`
@@ -118,27 +108,29 @@ function mess {
 }
 
 
-#
-# unison completion
-#
-autoload _unison
-zstyle -e ':compiletion:*:unison:*' completer _unison
+if [ "$TERM" != dumb ]; then
+    #
+    # unison completion
+    #
+    autoload _unison
+    zstyle -e ':compiletion:*:unison:*' completer _unison
 
-#
-# TLA
-# autoload _tla
-zstyle -e ':completion:*:tla:*' completer _tla
+    #
+    # TLA
+    # autoload _tla
+    zstyle -e ':completion:*:tla:*' completer _tla
 
-# Activate completion
-zstyle ':completion:*' completer _complete
-zstyle ':completion:*' matcher-list '' '+m:{a-z}={A-Z}' '+r:|[._-]=* r:|=*' '+l:|=* r:|=*'
+    # Activate completion
+    zstyle ':completion:*' completer _complete
+    zstyle ':completion:*' matcher-list '' '+m:{a-z}={A-Z}' '+r:|[._-]=* r:|=*' '+l:|=* r:|=*'
 
-# Use a cache
-zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path ~/.zsh/cache
+    # Use a cache
+    zstyle ':completion:*' use-cache on
+    zstyle ':completion:*' cache-path ~/.zsh/cache
 
-# Ignore completion functions for commands you don't have
-zstyle ':completion:*:functions' ignored-patterns '_*'
+    # Ignore completion functions for commands you don't have
+    zstyle ':completion:*:functions' ignored-patterns '_*'
 
-autoload -U compinit
-compinit
+    autoload -U compinit
+    compinit
+fi

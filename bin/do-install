@@ -8,36 +8,61 @@ project_name="`basename $PWD`"
 getroot=""
 stow_args="--user"
 location="user-locally"
-prefix_arg="--prefix=$HOME/.system/stow/$project_name"
+prefix="$HOME/.system/stow/$project_name"
+ask=yes
 
-case "$1" in
-    --system)
-	shift
-	stow_args=""
-	location="system-wide"
-	prefix_arg="--prefix=/usr/local/stow/$project_name"
-	getroot="sudo"
+done=false
+while ! [ -z "$1" ]; do
+    case "$1" in
+	--system)
+	    shift
+	    stow_args=""
+	    location="system-wide"
+	    prefix="/usr/local/stow/$project_name"
+	    getroot="sudo"
+	    break
+	    ;;
+	--yes)
+	    shift
+	    ask=no
+	    ;;
+	*)
+	    done=true
+	    break
+	    ;;
+    esac
+    if [ "$done" = true ]; then
 	break
-	;;
-    *)
-	break
-	;;
-esac
+    fi
+done
 
-echo -n "Install $project_name $location? [y/n] "
-read answer
+
+if [ "$ask" = yes ]; then
+    echo -n "Install $project_name $location? [y/n] "
+    read answer
+else
+    answer=y
+fi
 if [ "$answer" = y ]; then
+    if [ -d "$prefix" ]; then
+	do-stow $stow_args -D "$project_name"
+	rm -rf "$prefix"
+    fi
     if [ -x configure ]; then
 	set -e
 	if ! [ -f Makefile ]; then
-	    ./configure "$prefix_arg" "$@"
+	    ./configure --prefix="$prefix" "$@"
 	fi 
 	make && $getroot make install
     elif [ -x autogen.sh ]; then
 	./autogen.sh "$prefix_arg" "$@" \
 	    && make && $getroot make install
     elif [ -f setup.py ]; then
-	python setup.py build && $getroot python setup.py install "$prefix_arg"
+	python setup.py build && $getroot python setup.py install --prefix="$prefix"
+	./autogen.sh --prefix="$prefix" "$@" \
+	    && make && $getroot make install \
+    elif [ -x setup.py ]; then
+	python setup.py build && $getroot python setup.py install --prefix="$prefix"
     else
 	echo "no installable project found here, aborting."
 	exit 1

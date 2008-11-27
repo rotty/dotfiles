@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cd $HOME/.private
+for histfile in zsh_history; do
+    lastoverflow=`git log -n1 --pretty=oneline ${histfile}.overflow | awk '{ print $1; }'`
+    git diff -r "$lastoverflow" "$histfile" | tail --lines=+4 \
+	| grep '^-' | sed 's/^-//' >> "${histfile}.overflow"
+done
