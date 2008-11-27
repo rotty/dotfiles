@@ -1,5 +1,0 @@
-(defun irc ()
-  (interactive)
-  (erc-select :server "irc.freenode.net" :nick "rotty")
-  (erc-select :server "irc.oftc.net" :nick "rotty")
-  (erc-select :server "irc.gimp.org" :nick "rotty"))

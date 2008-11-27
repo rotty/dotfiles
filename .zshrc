@@ -19,21 +19,9 @@ esac
 
 alias la='ls -lA'
 alias hr='hash -r'
+alias recd='cd `pwd`'
 
 alias svn-cd='svn diff | colordiff | less -R'
-
-# Grep source trees
-alias pyfind='find -type f -a \( -name "*.py" -o -name "*.ptl" \) | \
-              xargs grep '
-alias scmfind='find -type f -a \( -name "*.scm" -o -name "*.ss" \) | xargs grep '
-alias cfind='find -type f  -a \( -name "*.c" -o -name "*.cpp" \
-                                 -o -name "*.cc" -o -name "*.cxx" \) | \
-             xargs grep '
-alias hfind='find -type f  -a \( -name "*.h" -o -name "*.hh" \
-                                 -o -name "*.H" -o -name "*.hxx" -o -name "*.hpp" \) | \
-             xargs grep '
-alias lispfind='find -type f -a -name "*.lisp" | xargs grep '
-alias jfind='find -type f -a -name "*.java" -print0 | xargs -0 grep '
 
 # Host-Specific stuff
 if [ -f ~/.zshrc-`hostname` ]; then
