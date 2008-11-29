@@ -50,14 +50,14 @@
 (autoload 'scheme-complete-or-indent "scheme-complete" nil t)
 (autoload 'scheme-get-current-symbol-info "scheme-complete" nil t)
 
-(eval-after-load 'scheme
-  '(progn (define-key scheme-mode-map "\t" 'scheme-complete-or-indent)))
+;; (eval-after-load 'scheme
+;;   '(progn (define-key scheme-mode-map "\t" 'scheme-complete-or-indent)))
 
-(add-hook 'scheme-mode-hook
-   (lambda ()
-     (make-local-variable 'eldoc-documentation-function)
-     (setq eldoc-documentation-function 'scheme-get-current-symbol-info)
-     (eldoc-mode)))
+;; (add-hook 'scheme-mode-hook
+;;    (lambda ()
+;;      (make-local-variable 'eldoc-documentation-function)
+;;      (setq eldoc-documentation-function 'scheme-get-current-symbol-info)
+;;      (eldoc-mode)))
 
 
 
@@ -137,9 +137,11 @@
 	   (and-let* 1)
 	   (send 1)
 	   (flags-case 1)
+	   (coroutine 1)
 	   (let-attributes 3)
 	   (let-accessors 2)
-	   (let-ginstance-fields 2)))
+	   (let-ginstance-fields 2)
+	   (let-privates 1)))
   (put (car hint) 'scheme-indent-function (cadr hint)))
 
 (require 'ikarus-script)
