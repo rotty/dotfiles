@@ -23,6 +23,10 @@ if [ -f "$series" ] && [ -d "$svncheckout" ]; then
     first_patch=`grep -v '^local-' "$series" | head -n 1`
     cd $svncheckout
     [ `svn status -q | wc -l` -eq 0 ] || die "SVN checkout not clean"
+    
+    echo "* updating SVN checkout"
+    svn up
+    
     echo "* applying $first_patch to SVN checkout"
     patch --dry-run -p1 < $root/.hg/patches/$first_patch > /dev/null || die "patch does not apply"
     patch -p1 < $root/.hg/patches/$first_patch
