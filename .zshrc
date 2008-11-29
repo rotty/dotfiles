@@ -1,7 +1,12 @@
 #
+# Create some "standard" dirs, if needed
+#
+mkdir -p ~/.private/$HOST
+
+#
 # History
 #
-HISTFILE=$HOME/.private/zsh_history
+HISTFILE=$HOME/.private/$HOST/zsh_history
 HISTSIZE=40000
 SAVEHIST=40000
 
