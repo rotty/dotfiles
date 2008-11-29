@@ -4,3 +4,4 @@
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
 (setq org-agenda-files '("~/org/DiplomArbeit.org"))
+(setq org-CUA-compatible t)
