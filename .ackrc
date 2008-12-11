@@ -1,0 +1,3 @@
+--type-add=scheme=.sls,.sps
+--type-set=cheader=.h
+--ignore-dir=.svn-checkout
