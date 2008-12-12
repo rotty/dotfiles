@@ -4,5 +4,6 @@ xterm*background: white
 
 Rxvt.font: 	 -jmk-neep alt-medium-r-*-*-*-120-*-*-*-*-iso8859-15
 
-Emacs.font:	-jmk-neep alt-medium-r-*-*-*-120-*-*-*-*-iso8859-15
+Emacs.font:	Dejavu Sans Mono-9
 
+Emacs.FontBackend: xft
