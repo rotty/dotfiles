@@ -137,6 +137,32 @@
 	  (setq result nil)))     ; ignore if bad prefix or already in table
     result))
 
+(defun umlaut ()
+  (interactive)
+  (let ((l '(("a" . "ä")
+	     ("o" . "ö")
+	     ("u" . "ü")
+	     ("A" . "Ä")
+	     ("O" . "Ö")
+	     ("U" . "Ü")
+	     ("s" . "ß")
+	     ("dash" . "–")
+	     ("dots" . "…")
+	     ("lquot" . "“")
+	     ("rquot" . "”")
+	     ("glquot" . "„")
+	     ("grquot" . "“")
+	     ("lquotsingle" . "‘")
+	     ("rquotsingle" . "’")
+	     ("euro" . "€")
+	     ("interrobang" . "‽")
+	     ("kbdalt" . "⌥")
+	     ("kbdcommand" . "⌘")
+	     ("kbdshift" . "⇧"))))
+    (let ((u (completing-read "Short form: " l nil t)))
+      (let ((r (assoc u l)))
+	(when r (insert (cdr r)))))))
+
 
 ;; Config snippets loading; this provides an easy way to define
 ;; 'configuration snippets' for use with a specific package (that may
