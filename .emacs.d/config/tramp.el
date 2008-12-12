@@ -1,4 +1,4 @@
-(require 'tramp)
+;;(require 'tramp) ; not needed in emacs23
 (eval-after-load "ange-ftp"
   '(tramp-disable-ange-ftp))
 
