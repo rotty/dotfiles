@@ -101,6 +101,13 @@ function mess {
   [[ $? -eq 0 ]] && cd "$DIR"
 }
 
+# unique, exported, tied array of $rubylib to colon-seperated $RUBYLIB
+typeset -T -U -gx -a RUBYLIB rubylib ':'
+rubylib-add()   { rubylib+=("$@") }
+rubylib-del()   { for i ("$@") { rubylib[(r)$i]=() } }
+rubylib-reset() { rubylib=(); [[ -f ~/.rubylib ]] && source ~/.rubylib }
+rubylib-reset
+
 
 if [ "$TERM" != dumb ]; then
     #
