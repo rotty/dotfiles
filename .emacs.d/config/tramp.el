@@ -17,7 +17,7 @@
    maybe accessed via the corresponding tramp method."
 
   (interactive)
-  (require 'tramp)
+;;  (require 'tramp)
   (let* ( ;; We bind the variable `file-name-history' locally so we can
    	 ;; use a separate history list for "root" files.
    	 (file-name-history find-file-root-history)
