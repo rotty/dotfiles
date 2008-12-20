@@ -60,6 +60,12 @@
 ;; woman
 (setq woman-use-own-frame nil)
 
+;; X11 clipboard interaction (http://www.emacswiki.org/emacs/CopyAndPaste)
+(setq x-select-enable-primary nil)
+(setq x-select-enable-clipboard t)
+(setq select-active-regions t)
+(global-set-key [mouse-2] 'mouse-yank-primary)
+
 ;; Extend load-path
 (let ((top (expand-file-name "~/.emacs.d/lisp")))
   (add-to-list 'load-path top)
@@ -199,6 +205,13 @@
     (let ((u (completing-read "Short form: " l nil t)))
       (let ((r (assoc u l)))
 	(when r (insert (cdr r)))))))
+
+(eval-after-load "ispell"
+  (progn
+    (setq ispell-dictionary "nynorsk"
+          ispell-extra-args '("-a" "-i" "utf-8") ; aspell doesn't understand -i utf-8, hunspell needs it
+          ispell-silently-savep t)))
+(setq-default ispell-program-name "hunspell"))
 
 
 ;; Config snippets loading; this provides an easy way to define

@@ -22,3 +22,5 @@
 (add-hook 'write-file-hooks 'copyright-update)
 
 (setq darcsum-diff-switches "-u")
+
+(add-to-list 'auto-mode-alist '("\\.md" . markdown-mode))

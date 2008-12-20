@@ -1,9 +1,26 @@
+!
+! Emacs
+!
+Emacs.font:	Dejavu Sans Mono-9
+Emacs.FontBackend: xft
+
+!
+! xterm
+!
 xterm*font: 	 -jmk-neep alt-medium-r-*-*-*-120-*-*-*-*-iso8859-15
 xterm*foreground: black
 xterm*background: white
 
-Rxvt.font: 	 -jmk-neep alt-medium-r-*-*-*-120-*-*-*-*-iso8859-15
+!
+! rxvt-unicode
+!
+URxvt.font: 	 -jmk-neep alt-medium-r-*-*-*-120-*-*-*-*-iso8859-15
 
-Emacs.font:	Dejavu Sans Mono-9
+URxvt*scrollBar_right: false
+URxvt*scrollBar: false
+URxvt*borderLess: true
 
-Emacs.FontBackend: xft
+
+! Adjust colors for white background
+URxvt*color3: #edc100
+URxvt*color11: #ffcf00
