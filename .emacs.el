@@ -90,6 +90,43 @@
 
 (setq debian-changelog-mailing-address "rotty@debian.org")
 
+;; Taken from
+;; http://www.emacswiki.org/emacs/JorgenSchaefersEmacsConfig, and
+;; tweaked
+(setq-default
+  ;; we usually want a final newline...
+ require-final-newline 'ask
+ ;; No, please, no tabs in my programs!
+ indent-tabs-mode nil
+ ;; If you don't know, give me org-mode
+ default-major-mode 'org-mode
+ ;; I don't like emacs destroying my window setup
+ even-window-heights nil
+ ;; Same here
+ resize-mini-windows nil
+ ;; No am/pm here
+ display-time-24hr-format t
+ ;; A tab is 8 spaces is 8 spaces is 8 spaces
+ default-tab-width 8
+ ;; Scrolling is moving the document, not moving my eyes
+ scroll-preserve-screen-position 'keep
+ ;; My email address
+ user-mail-address "a.rottmann@gmx.at"
+ ;; I kinda know my emacs
+ inhibit-startup-message t
+ ;; unified context is nicer to read
+ diff-switches "-u"
+ ;; A wide characters ask for a wide cursor
+ x-stretch-cursor t
+ ;; i want a mouse yank to be inserted where the point is, not where i click
+ mouse-yank-at-point t
+ ;; Don't highlight stuff that I can click on all the time.
+ mouse-highlight 1
+ )
+
+;; Oh, and I want useful mouse selection.
+(mouse-sel-mode 1)
+
 (defvar user-temporary-file-directory
   (concat temporary-file-directory user-login-name "/"))
 (make-directory user-temporary-file-directory t)
