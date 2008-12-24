@@ -211,7 +211,7 @@
     (setq ispell-dictionary "nynorsk"
           ispell-extra-args '("-a" "-i" "utf-8") ; aspell doesn't understand -i utf-8, hunspell needs it
           ispell-silently-savep t)))
-(setq-default ispell-program-name "hunspell"))
+(setq-default ispell-program-name "hunspell")
 
 
 ;; Config snippets loading; this provides an easy way to define
