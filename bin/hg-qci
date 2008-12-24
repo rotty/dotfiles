@@ -18,50 +18,59 @@ else
     top=
 fi
 
-hg qpop -a
-if [ -f "$series" ] && [ -d "$svncheckout" ]; then
-    first_patch=`grep -v '^local-' "$series" | head -n 1`
-    cd $svncheckout
-    [ `svn status -q | wc -l` -eq 0 ] || die "SVN checkout not clean"
-    
-    echo "* updating SVN checkout"
-    svn up
-    
-    echo "* applying $first_patch to SVN checkout"
-    patch --dry-run -p1 < $root/.hg/patches/$first_patch > /dev/null || die "patch does not apply"
-    patch -p1 < $root/.hg/patches/$first_patch
-    svn diff | diffstat
-    echo -n "commit this to SVN [yes/no]? "
-    read answer
-    if [ "$answer" = yes ]; then
-	echo "* committing to SVN"
-	if svn commit "$@"; then
-	    patch_committed=yes
-	else
-	    patch_committed=no
-	fi
-    else
-	echo "* dropping out to shell; type 'exit' or CTRL-D if you have committed, 'exit 1' otherwise"
-	if $SHELL; then
-	    patch_committed=yes
-	else
-	    patch_committed=no
-	fi
-    fi
-    if [ "$patch_committed" = yes ]; then
-        # remove the first non-local patch from the series
-	echo "* removing $first_patch from series"
-	mv "$series" "${series}.orig"
-	grep '^local-' "${series}.orig" >> "${series}"
-	grep -Ev "^(local-|$first_patch)" "${series}.orig" >> "$series"
-    else
-	# revert the patch
-	echo "* reverting SVN checkout back to clean state"
-	svn revert -R .
-    fi
-    cd ..
+if ! [ -f "$series" ] || ! [ -d "$svncheckout" ]; then
+    echo "* SVN checkout or MQ not found"
+    exit 1
 fi
 
-if [ "$top" != "" ]; then    
+hg qpop -a
+
+first_patch=`grep -v '^local-' "$series" | head -n 1`
+cd $svncheckout
+[ `svn status -q | wc -l` -eq 0 ] || die "SVN checkout not clean"
+
+echo "* updating SVN checkout"
+svn up
+
+echo "* applying $first_patch to SVN checkout"
+patch_file="$root/.hg/patches/$first_patch"
+if grep -qE '^\+\s*@echo' "$patch_file"; then
+    echo "* @echo found in patch, please remove"
+    exit 1
+fi
+patch --dry-run -p1 < "$patch_file" > /dev/null || die "patch does not apply"
+patch -p1 < "$patch_file"
+svn diff | diffstat
+echo -n "commit this to SVN [yes/no]? "
+read answer
+if [ "$answer" = yes ]; then
+    echo "* committing to SVN"
+    if svn commit "$@"; then
+	patch_committed=yes
+    else
+	patch_committed=no
+    fi
+else
+    echo "* dropping out to shell; type 'exit' or CTRL-D if you have committed, 'exit 1' otherwise"
+    if $SHELL; then
+	patch_committed=yes
+    else
+	patch_committed=no
+    fi
+fi
+if [ "$patch_committed" = yes ]; then
+        # remove the first non-local patch from the series
+    echo "* removing $first_patch from series"
+    mv "$series" "${series}.orig"
+    grep '^local-' "${series}.orig" >> "${series}"
+    grep -Ev "^(local-|$first_patch)" "${series}.orig" >> "$series"
+else
+	# revert the patch
+    echo "* reverting SVN checkout back to clean state"
+    svn revert -R .
+fi
+cd ..
+
+if [ "$top" != "" ] && [ "$top" != "$first_patch" ]; then    
     hg qgoto $top
 fi

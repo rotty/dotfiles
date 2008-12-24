@@ -45,8 +45,7 @@ else
 fi
 if [ "$answer" = y ]; then
     if [ -d "$prefix" ]; then
-	do-stow $stow_args -D "$project_name"
-	$getroot rm -rf "$prefix"
+	do-stow $stow_args --purge "$project_name"
     fi
     if [ -x configure ]; then
 	set -e

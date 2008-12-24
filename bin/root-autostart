@@ -1,0 +1,10 @@
+#! /bin/sh
+
+for h in /home/*; do
+    user=`basename $h` # a (probably quite sane) heuristic
+    autostart="$h/.autostart"
+    if [ -f  "$autostart" ]; then
+	su - "$user" -c "[ -x $autostart ] && echo '[Running $autostart]' && $autostart" \
+	    2>&1 | logger -t "autostart ($user)"
+    fi
+done

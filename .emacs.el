@@ -64,6 +64,12 @@
 ;; VC is mostly useless for modern DVCSs
 (setq vc-handled-backends nil)
 
+;; X11 clipboard interaction (http://www.emacswiki.org/emacs/CopyAndPaste)
+(setq x-select-enable-primary nil)
+(setq x-select-enable-clipboard t)
+(setq select-active-regions t)
+(global-set-key [mouse-2] 'mouse-yank-primary)
+
 ;; Extend load-path
 (let ((top (expand-file-name "~/.emacs.d/lisp")))
   (add-to-list 'load-path top)
@@ -87,6 +93,43 @@
 (setq browse-url-browser-function 'browse-url-firefox-new-tab)
 
 (setq debian-changelog-mailing-address "rotty@debian.org")
+
+;; Taken from
+;; http://www.emacswiki.org/emacs/JorgenSchaefersEmacsConfig, and
+;; tweaked
+(setq-default
+  ;; we usually want a final newline...
+ require-final-newline 'ask
+ ;; No, please, no tabs in my programs!
+ indent-tabs-mode nil
+ ;; If you don't know, give me org-mode
+ default-major-mode 'org-mode
+ ;; I don't like emacs destroying my window setup
+ even-window-heights nil
+ ;; Same here
+ resize-mini-windows nil
+ ;; No am/pm here
+ display-time-24hr-format t
+ ;; A tab is 8 spaces is 8 spaces is 8 spaces
+ default-tab-width 8
+ ;; Scrolling is moving the document, not moving my eyes
+ scroll-preserve-screen-position 'keep
+ ;; My email address
+ user-mail-address "a.rottmann@gmx.at"
+ ;; I kinda know my emacs
+ inhibit-startup-message t
+ ;; unified context is nicer to read
+ diff-switches "-u"
+ ;; A wide characters ask for a wide cursor
+ x-stretch-cursor t
+ ;; i want a mouse yank to be inserted where the point is, not where i click
+ mouse-yank-at-point t
+ ;; Don't highlight stuff that I can click on all the time.
+ mouse-highlight 1
+ )
+
+;; Oh, and I want useful mouse selection.
+(mouse-sel-mode 1)
 
 (defvar user-temporary-file-directory
   (concat temporary-file-directory user-login-name "/"))
@@ -140,6 +183,39 @@
       (if (he-string-member result he-tried-table t)
 	  (setq result nil)))     ; ignore if bad prefix or already in table
     result))
+
+(defun umlaut ()
+  (interactive)
+  (let ((l '(("a" . "ä")
+	     ("o" . "ö")
+	     ("u" . "ü")
+	     ("A" . "Ä")
+	     ("O" . "Ö")
+	     ("U" . "Ü")
+	     ("s" . "ß")
+	     ("dash" . "–")
+	     ("dots" . "…")
+	     ("lquot" . "“")
+	     ("rquot" . "”")
+	     ("glquot" . "„")
+	     ("grquot" . "“")
+	     ("lquotsingle" . "‘")
+	     ("rquotsingle" . "’")
+	     ("euro" . "€")
+	     ("interrobang" . "‽")
+	     ("kbdalt" . "⌥")
+	     ("kbdcommand" . "⌘")
+	     ("kbdshift" . "⇧"))))
+    (let ((u (completing-read "Short form: " l nil t)))
+      (let ((r (assoc u l)))
+	(when r (insert (cdr r)))))))
+
+(eval-after-load "ispell"
+  (progn
+    (setq ispell-dictionary "nynorsk"
+          ispell-extra-args '("-a" "-i" "utf-8") ; aspell doesn't understand -i utf-8, hunspell needs it
+          ispell-silently-savep t)))
+(setq-default ispell-program-name "hunspell"))
 
 
 ;; Config snippets loading; this provides an easy way to define

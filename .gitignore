@@ -6,6 +6,12 @@
 /win
 /smb
 /src
+/ipod
+/irclogs
+/music
+/Music
+/VisoTech
+
 /.gvfs
 /.darcs/cache
 /.conkeror.mozdev.org*
@@ -27,4 +33,5 @@
 /.openoffice.org2
 /.purple
 /.slocdata
+
 

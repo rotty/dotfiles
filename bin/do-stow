@@ -2,11 +2,21 @@
 
 getroot=sudo
 prefix=/usr/local/stow
+action="stow"
+stow_opts=""
 while [ -n "$1" ]; do
     case "$1" in
 	--user)
 	    prefix=$HOME/.system/stow
 	    getroot=""
+	    shift
+	    ;;
+	--purge)
+	    action=purge
+	    shift
+	    ;;
+	-*)
+	    stow_opts="$stow_opts $1"
 	    shift
 	    ;;
 	*)
@@ -15,4 +25,22 @@ while [ -n "$1" ]; do
     esac
 done
 
-( cd "$prefix" && $getroot stow "$@" )
+function run_stow() {
+    ( cd "$prefix" && $getroot stow $stow_opts "$@" )
+}
+
+package="$1"
+if [ -z "$package" ]; then
+    echo "Usage: do-stow [--purge] [STOW-ARG ...] PACKAGE"
+    exit 1
+fi
+
+case $action in
+    purge)
+	run_stow -D $stow_opts "$package"
+	rm -rf "$prefix/$package"
+	;;
+    stow)
+	run_stow $stow_opts "$package"
+	;;
+esac
