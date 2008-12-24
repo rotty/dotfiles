@@ -60,6 +60,10 @@
 ;; woman
 (setq woman-use-own-frame nil)
 
+
+;; VC is mostly useless for modern DVCSs
+(setq vc-handled-backends nil)
+
 ;; Extend load-path
 (let ((top (expand-file-name "~/.emacs.d/lisp")))
   (add-to-list 'load-path top)
