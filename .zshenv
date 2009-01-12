@@ -43,7 +43,7 @@ if [ -f /etc/locale.gen ] && grep -q ^de_AT.UTF-8 /etc/locale.gen; then
 fi
 export PYTHONSTARTUP="$HOME/.pythonrc"
 export PYTHONDOCS="/usr/share/doc/python2.2-doc/html"
-export PLTCOLLECTS="$PLTCOLLECTS:$HOME/src/spe.r6rs/targets/mzscheme"
+export PLTCOLLECTS="$PLTCOLLECTS:$HOME/src/spe/targets/mzscheme"
 export XDG_DATA_DIRS="$HOME/.system/share:/usr/share"
 export IKARUS_LIBRARY_PATH="$HOME/src/spe/targets/ikarus"
 

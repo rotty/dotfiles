@@ -38,7 +38,7 @@ fi
 case $action in
     purge)
 	run_stow -D $stow_opts "$package"
-	rm -rf "$prefix/$package"
+	$getroot rm -rf "$prefix/$package"
 	;;
     stow)
 	run_stow $stow_opts "$package"
