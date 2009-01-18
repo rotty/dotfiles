@@ -43,6 +43,13 @@ if [ "$ask" = yes ]; then
 else
     answer=y
 fi
+
+if [ "$location" = system-wide ]; then
+    configure_args="--prefix=$prefix  --sysconfdir=/etc --localstatedir=/var"
+else
+    configure_args="--prefix=$prefix"
+fi
+
 if [ "$answer" = y ]; then
     if [ -d "$prefix" ]; then
 	do-stow $stow_args --purge "$project_name"
@@ -50,16 +57,11 @@ if [ "$answer" = y ]; then
     if [ -x configure ]; then
 	set -e
 	if ! [ -f Makefile ]; then
-	    ./configure --prefix="$prefix" "$@"
+	    ./configure $configure_args "$@"
 	fi 
 	make && $getroot make install
     elif [ -x autogen.sh ]; then
-	./autogen.sh "$prefix_arg" "$@" \
-	    && make && $getroot make install
-    elif [ -f setup.py ]; then
-	python setup.py build && $getroot python setup.py install --prefix="$prefix"
-	./autogen.sh --prefix="$prefix" "$@" \
-	    && make && $getroot make install
+	./autogen.sh $configure_args "$@" && make && $getroot make install
     elif [ -x setup.py ]; then
 	python setup.py build && $getroot python setup.py install --prefix="$prefix"
     else

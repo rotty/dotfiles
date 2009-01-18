@@ -65,10 +65,11 @@
 (setq vc-handled-backends nil)
 
 ;; X11 clipboard interaction (http://www.emacswiki.org/emacs/CopyAndPaste)
-(setq x-select-enable-primary nil)
-(setq x-select-enable-clipboard t)
-(setq select-active-regions t)
-(global-set-key [mouse-2] 'mouse-yank-primary)
+;; (setq x-select-enable-primary t)
+;; (setq x-select-enable-clipboard nil)
+;; (setq mouse-drag-copy-region nil)
+;; (setq select-active-regions t)
+;; (global-set-key [mouse-2] 'mouse-yank-primary)
 
 ;; Extend load-path
 (let ((top (expand-file-name "~/.emacs.d/lisp")))
@@ -102,8 +103,6 @@
  require-final-newline 'ask
  ;; No, please, no tabs in my programs!
  indent-tabs-mode nil
- ;; If you don't know, give me org-mode
- default-major-mode 'org-mode
  ;; I don't like emacs destroying my window setup
  even-window-heights nil
  ;; Same here
