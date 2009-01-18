@@ -25,8 +25,8 @@ while [ -n "$1" ]; do
     esac
 done
 
-function run_stow() {
-    ( cd "$prefix" && $getroot stow $stow_opts "$@" )
+run_stow() {
+    ( cd "$prefix" && $getroot stow "$@" )
 }
 
 package="$1"
