@@ -11,6 +11,11 @@ location="user-locally"
 prefix="$HOME/.system/stow/$project_name"
 ask=yes
 
+die() {
+    echo "$@"
+    exit 1
+}
+
 done=false
 while ! [ -z "$1" ]; do
     case "$1" in
@@ -56,11 +61,12 @@ if [ "$answer" = y ]; then
     if [ -x configure ]; then
 	set -e
 	if ! [ -f Makefile ]; then
-	    ./configure $configure_args "$@"
+	    ./configure $configure_args "$@" || die "configure failed"
 	fi 
-	make && $getroot make install
+	(make && $getroot make install) || die "build/install failed"
     elif [ -x autogen.sh ]; then
-	./autogen.sh $configure_args "$@" && make && $getroot make install
+	(./autogen.sh $configure_args "$@" && make && $getroot make install ) \
+            || die "build/install failed"
     elif [ -x setup.py ]; then
 	python setup.py build && $getroot python setup.py install --prefix="$prefix"
     else
