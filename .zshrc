@@ -26,6 +26,8 @@ alias la='ls -lA'
 alias hr='hash -r'
 alias recd='cd `pwd`'
 alias a='sudo aptitude install'
+alias dl='curl -O'
+alias s='screen -x -R'
 
 alias svn-cd='svn diff | colordiff | less -R'
 
