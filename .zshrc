@@ -47,7 +47,7 @@ if [ "$TERM" = dumb ]; then
     PS1='$ '
     unsetopt zle
 else
-    PS1="%{${fg[magenta]}%}%m%{${fg[default]}%}:%{${fg[cyan]}%}%~%{${fg[default]}%}%# "
+    PS1="%{${fg[yellow]}%}%n%{${fg[default]}%}@%{${fg[magenta]}%}%m%{${fg[default]}%}:%{${fg[cyan]}%}%~%{${fg[default]}%}%# "
 fi
 
 case $TERM in
