@@ -48,10 +48,9 @@ else
     answer=y
 fi
 
+configure_args="--enable-maintainer-mode --prefix=$prefix"
 if [ "$location" = system-wide ]; then
-    configure_args="--prefix=$prefix  --sysconfdir=/etc --localstatedir=/var"
-else
-    configure_args="--prefix=$prefix"
+    configure_args="$configure_args --sysconfdir=/etc --localstatedir=/var"
 fi
 
 if [ "$answer" = y ]; then

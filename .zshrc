@@ -2,6 +2,12 @@
 # Create some "standard" dirs, if needed
 #
 mkdir -p ~/.private/$HOST
+for x in ~/.private/common/bin/*; do
+    name=`basename $x`
+    if ! [ -e ~/bin/$name ]; then
+        ln -s ../.private/common/bin/$name ~/bin/
+    fi
+done
 
 #
 # History
@@ -28,8 +34,9 @@ alias recd='cd `pwd`'
 alias a='sudo aptitude install'
 alias dl='curl -O'
 alias s='screen -x -R'
-
 alias svn-cd='svn diff | colordiff | less -R'
+
+alias -g L='2>&1 | tee ,log'
 
 # Host-Specific stuff
 if [ -f ~/.zshrc-`hostname` ]; then
