@@ -43,11 +43,20 @@ fi
 autoload colors
 colors
 
+if [ -f /etc/system_info ]; then
+    . /etc/system_info
+fi
+
 if [ "$TERM" = dumb ]; then
     PS1='$ '
     unsetopt zle
 else
-    PS1="%{${fg[yellow]}%}%n%{${fg[default]}%}@%{${fg[magenta]}%}%m%{${fg[default]}%}:%{${fg[cyan]}%}%~%{${fg[default]}%}%# "
+    if [ -n "$SYSTEM_NAME" ]; then
+        sysprompt="($SYSTEM_NAME)"
+    else
+        sysprompt=""
+    fi
+    PS1="%{${fg[yellow]}%}%n%{${fg[default]}%}@%{${fg[magenta]}%}%m%{${fg[default]}%}$sysprompt:%{${fg[cyan]}%}%~%{${fg[default]}%}%# "
 fi
 
 case $TERM in
