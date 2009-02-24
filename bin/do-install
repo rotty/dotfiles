@@ -25,7 +25,6 @@ while ! [ -z "$1" ]; do
 	    location="system-wide"
 	    prefix="/usr/local/stow/$project_name"
 	    getroot="sudo"
-	    break
 	    ;;
 	--yes)
 	    shift
