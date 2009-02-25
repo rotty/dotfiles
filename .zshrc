@@ -2,12 +2,14 @@
 # Create some "standard" dirs, if needed
 #
 mkdir -p ~/.private/$HOST
-for x in ~/.private/common/bin/*; do
-    name=`basename $x`
-    if ! [ -e ~/bin/$name ]; then
-        ln -s ../.private/common/bin/$name ~/bin/
-    fi
-done
+if [ `ls -1 | wc -l` -gt 0 ]; then
+    for x in ~/.private/common/bin/*; do
+        name=`basename $x`
+        if ! [ -e ~/bin/$name ]; then
+            ln -s ../.private/common/bin/$name ~/bin/
+        fi
+    done
+fi
 
 #
 # History
@@ -36,7 +38,7 @@ alias dl='curl -O'
 alias s='screen -x -R'
 alias svn-cd='svn diff | colordiff | less -R'
 
-alias -g L='2>&1 | tee ,log'
+alias -g _L_='2>&1 | tee ,log'
 
 # Host-Specific stuff
 if [ -f ~/.zshrc-`hostname` ]; then
