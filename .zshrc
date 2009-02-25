@@ -2,7 +2,7 @@
 # Create some "standard" dirs, if needed
 #
 mkdir -p ~/.private/$HOST
-if [ `ls -1 | wc -l` -gt 0 ]; then
+if [ `ls -1 ~/.private/common/bin | wc -l` -gt 0 ]; then
     for x in ~/.private/common/bin/*; do
         name=`basename $x`
         if ! [ -e ~/bin/$name ]; then
