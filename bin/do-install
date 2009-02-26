@@ -5,11 +5,14 @@
 
 project_name="`basename $PWD`"
 
+. ~/etc/sysinfo-common.sh
+
 getroot=""
 stow_args="--user"
 location="user-locally"
-prefix="$HOME/.system/stow/$project_name"
+prefix="$HOME/$sysdir/stow/$project_name"
 ask=yes
+reconf=false
 
 die() {
     echo "$@"
@@ -30,9 +33,16 @@ while ! [ -z "$1" ]; do
 	    shift
 	    ask=no
 	    ;;
+        --reconf)
+            shift
+            reconf=true
+            ;;
+        --)
+            shift
+            done=true
+            ;;
 	*)
 	    done=true
-	    break
 	    ;;
     esac
     if [ "$done" = true ]; then
@@ -48,7 +58,7 @@ else
     answer=y
 fi
 
-configure_args="--enable-maintainer-mode --prefix=$prefix"
+configure_args="--enable-maintainer-mode --prefix=$prefix $configure_args"
 if [ "$location" = system-wide ]; then
     configure_args="$configure_args --sysconfdir=/etc --localstatedir=/var"
 fi
@@ -59,7 +69,7 @@ if [ "$answer" = y ]; then
     fi
     if [ -x configure ]; then
 	set -e
-	if ! [ -f Makefile ]; then
+	if [ "$reconf" = true ] || ! [ -f Makefile ]; then
 	    ./configure $configure_args "$@" || die "configure failed"
 	fi 
 	(make && $getroot make install) || die "build/install failed"

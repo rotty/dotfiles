@@ -2,7 +2,10 @@
 # Create some "standard" dirs, if needed
 #
 mkdir -p ~/.private/$HOST
-if [ `ls -1 ~/.private/common/bin | wc -l` -gt 0 ]; then
+
+# Link private helper scripts into ~/bin
+priv_cbin="$HOME/.private/common/bin"
+if [ -d "$priv_cbin" ] && [ `ls -1 $priv_cbin | wc -l` -gt 0 ]; then
     for x in ~/.private/common/bin/*; do
         name=`basename $x`
         if ! [ -e ~/bin/$name ]; then
