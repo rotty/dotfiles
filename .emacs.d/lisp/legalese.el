@@ -148,7 +148,12 @@ commented out using comment-region."
          "with the Invariant Sections being LIST THEIR TITLES, with the"
          "Front-Cover Texts being LIST, and with the Back-Cover Texts being LIST."
          "A copy of the license is included in the section entitled \"GNU"
-         "Free Documentation License\"."))
+         "Free Documentation License\".")
+    (bsd "This program is free software, you can redistribute it and/or"
+         "modify it under the terms of the new-style BSD license."
+         ""
+         "You should have received a copy of the BSD license along with this"
+         "program. If not, see <http://www.debian.org/misc/bsd.license>."))
   "*A definition of copyright boilerplates."
   :group 'legalese
   :type '(alist :key-type symbol
