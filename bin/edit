@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ -n "$DISPLAY" ]; then
+    exec emacsclient -c -a zile "$@"
+else
+    exec emacsclient -t -a zile "$@"
+fi

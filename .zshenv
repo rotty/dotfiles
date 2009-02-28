@@ -37,7 +37,7 @@ export CHICKEN_REPOSITORY="$HOME/$sysdir/lib/chicken"
 
 export BROWSER="firefox -n"
 export PAGER=less
-export EDITOR=zile
+export EDITOR=edit
 export CVS_RSH=ssh
 export CCACHE_UNIFY=yes
 export LANG=C
