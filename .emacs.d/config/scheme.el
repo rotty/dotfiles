@@ -68,6 +68,60 @@
 
 
 
+(defvar scheme-indent-styles nil
+  "A list of currently active indentation styles for Scheme")
+
+(defvar scheme-indent-style-alist nil
+  "An association list holding the definitions of Scheme indentation styles")
+
+(defun scheme-indent-style (keyword)
+  (catch 'found
+    (dolist (style-name scheme-indent-styles nil)
+      (let* ((style (cdr (assq style-name scheme-indent-style-alist)))
+             (entry (assq keyword style)))
+        (if entry
+            (throw 'found (cadr entry)))))))
+
+(defun scheme-add-indent-style (stylename description)
+  (let ((existing (assq stylename scheme-indent-style-alist)))
+    (if existing
+        (setcdr existing description)
+      (setq scheme-indent-style-alist (cons (cons stylename description)
+                                            scheme-indent-style-alist)))))
+
+(defun scheme-indent-styles-safe-p (value)
+  (and (listp value)
+       (catch 'done
+         (dolist (elt value t)
+           (if (not (symbolp elt))
+               (throw 'done nil))))))
+
+(put 'scheme-indent-styles 'safe-local-variable 'scheme-indent-styles-safe-p)
+
+(scheme-add-indent-style 
+ 'testeez
+ '((testeez 1)
+   (test/equal 1)
+   (test/equiv 1)
+   (test-true 1)
+   (test-eval 1)
+   (test-define 2)))
+
+(scheme-add-indent-style
+ 'trc-testing
+ '((test-eq 1)
+   (test-equal 1)
+   (test-equiv 1)))
+
+(scheme-add-indent-style
+ 'sbank
+ '((let-attributes 3)
+   (let-accessors 2)))
+
+(scheme-add-indent-style
+ 'conjure-dsl
+ '((project 1)))
+
 (dolist (hint
 	 '((with-test-prefix 1)
 	   (with-interaction-environment 1)
@@ -79,52 +133,22 @@
 	   (let-optionals 2)
 	   (let-optionals* 2)
 	   (eval-when 1)
-	   (with-mutex 1)
-	   (with-fluids 1)
 	   (let-fluids 4)
-	   (with-handler 1)
 	   (destructure 1)
 	   (scmxlate-macro 1)
 	   (make-ctype 1)
 	   (match 1)
-	   (call-with-output-file/cleanup 1)
 	   (let-keywords 3)
+           (letrec* 1)
 	   (dir-excursion 1)
 	   (tla-dir-excursion 2)
 	   (remote-apply 1)
 	   (remote-run! 1)
-	   (with/fc 1)
-	   (with-lock 1)
-	   (with-module 1)
-	   (with-working-directory 1)
 	   (open-tcp-listener-accept-loop 1)
-	   (call-with-file-and-dir 1)
-	   (call-with-file-dumpster 2)
-	   (call-with-file-retriever 2)
-	   (call-with-port-dumpster 2)
-	   (call-with-input-url 1)
-	   (call-with-file-fasdump-port 2)
-	   (call-with-file-fasload-port 2)
-	   (call-with-string-output-port)
-	   (call-with-input-string 1)
-	   (call-with-port 1)
 	   (restart-command-processor 2)
 	   (let-fluid 2)
-	   (with-condition-context 1)
-	   (with-exception-handler 1)
-	   (call-with-append-file 1)
-	   (call-with-current-noise-port 1)
-	   (call-with-process-output 2)
-	   (call-with-process-input 2)
-	   (with-new-proposal 1)
-	   (with-cwd 1)
 	   (define-peephole-optimizer 2)
-	   (testeez 1)
-	   (test-true 1)
-	   (test-eval 1)
-	   (test-define 2)
-	   (test/equal 1)
-	   (test/equiv 1)
+           (in-test-group 1)
 	   (parse 1)
 	   (object 1)
 	   (set-standard-read-macro! 2)
@@ -138,10 +162,11 @@
 	   (send 1)
 	   (flags-case 1)
 	   (coroutine 1)
-	   (let-attributes 3)
-	   (let-accessors 2)
-	   (let-ginstance-fields 2)
-	   (let-privates 1)))
+	   (repeat 1)
+	   (let-privates 1)
+           (let*-props 2)
+           (program 1)
+           (fmt-let 2)))
   (put (car hint) 'scheme-indent-function (cadr hint)))
 
 (require 'ikarus-script)
@@ -177,7 +202,8 @@
                        (buffer-substring (point)
                                          (progn (forward-sexp 1) (point)))))
             method)
-        (setq method (or (get (intern-soft function) 'scheme-indent-function)
+        (setq method (or (scheme-indent-style (intern function))
+                         (get (intern-soft function) 'scheme-indent-function)
                          (get (intern-soft function) 'scheme-indent-hook)))
         (cond ((or (eq method 'defun)
                    (and (null method)
