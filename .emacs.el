@@ -48,9 +48,12 @@
 
 (which-function-mode 1)
 
-(setq custom-file "~/.emacs.d/.customized")
-(if (file-readable-p custom-file)
-  (load-file (expand-file-name custom-file)))
+(let ((cf (getenv "EMACS_CUSTOM_FILE")))
+  (if cf
+      (setq custom-file cf)
+    (setq custom-file "~/.emacs.d/custom/default.el")))
+(when (file-readable-p custom-file)
+  (load-file custom-file))
 
 (setq user-mail-address "a.rottmann@gmx.at")
 

@@ -1,5 +1,7 @@
 ;;(eval-after-load "scheme" '(modify-syntax-entry ?, "'   " scheme-mode-syntax-table))
 
+(require 'cl)
+
 ;;; Quack-el (extended Scheme support, http://www.neilvandyke.org/quack/)
 (require 'quack)
 
@@ -61,7 +63,11 @@
 
 
 
-(put 'scheme48-package 'safe-local-variable 'symbolp)
+(put 'scheme48-package 'safe-local-variable 
+     #'(lambda (v)
+         (or (symbolp v)
+             (and (listp v)
+                  (every #'symbolp v)))))
 
 (setq quack-pltish-keywords-to-fontify
       '("and" "begin" "call-with-current-continuation" "call-with-input-file" "call-with-output-file" "call/cc" "case" "case-lambda" "compound-unit/sig" "cond" "condition" "cond-expand" "define" "define/optional" "define-condition-type" "define-macro" "define-module" "define-public" "define-signature" "define-syntax" "define-syntax-set" "define-values" "define-values/invoke-unit/sig" "define-method" "define-generic" "define-class" "delay" "do" "else" "exit-handler" "guard" "if" "import" "lambda" "let" "let*" "let*-values" "let+" "let-keywords" "let-optional" "let-syntax" "let-values" "let/ec" "letrec" "letrec-values" "letrec-syntax" "library" "match-lambda" "match-lambda*" "match-let" "match-let*" "match-letrec" "match-define" "mixin" "opt-lambda" "or" "override" "override*" "namespace-variable-bind/invoke-unit/sig" "parameterize" "private" "private*" "protect" "provide" "provide-signature-elements" "provide/contract" "public" "public*" "quote" "receive" "rename" "require" "require-for-syntax" "send" "send*" "setter" "set!" "set!-values" "signature->symbols" "super-instantiate" "syntax-case" "syntax-case*" "syntax-error" "syntax-rules" "unit/sig" "unless" "when" "with-handlers" "with-method" "with-syntax"))
@@ -76,11 +82,15 @@
 
 (defun scheme-indent-style (keyword)
   (catch 'found
-    (dolist (style-name scheme-indent-styles nil)
-      (let* ((style (cdr (assq style-name scheme-indent-style-alist)))
-             (entry (assq keyword style)))
-        (if entry
-            (throw 'found (cadr entry)))))))
+    (dolist (style-spec scheme-indent-styles nil)
+      (cond ((consp style-spec)
+             (if (eq (car style-spec) keyword)
+                 (throw 'found (cadr style-spec))))
+            (t
+             (let* ((style (cdr (assq style-spec scheme-indent-style-alist)))
+                    (entry (assq keyword style)))
+               (if entry
+                   (throw 'found (cadr entry)))))))))
 
 (defun scheme-add-indent-style (stylename description)
   (let ((existing (assq stylename scheme-indent-style-alist)))
@@ -91,10 +101,12 @@
 
 (defun scheme-indent-styles-safe-p (value)
   (and (listp value)
-       (catch 'done
-         (dolist (elt value t)
-           (if (not (symbolp elt))
-               (throw 'done nil))))))
+       (every #'(lambda (elt)
+                  (or (symbolp elt)
+                      (and (consp elt)
+                           (symbolp (car elt))
+                           (integerp (cadr elt)))))
+              value)))
 
 (put 'scheme-indent-styles 'safe-local-variable 'scheme-indent-styles-safe-p)
 
@@ -120,7 +132,48 @@
 
 (scheme-add-indent-style
  'conjure-dsl
- '((project 1)))
+ '((project 1)
+   (define-project 2)))
+
+(scheme-add-indent-style
+ 'foof-loop
+ '((iterate 'with-...)
+   (iterate! 'with-...)
+   (iterate* 'with-...)
+   (iterate-values 'with-...)
+   (lazy-recur 'with-...)
+   (lazy-recur* 'with-...)
+   (recur 'with-...)
+   (recur* 'with-...)
+
+   ;;; This is silly, but so would altering the definition of
+   ;;; `scheme-indent-function' yet again to include a test for
+   ;;; `collect-...'.  Better would be to have a table mapping regular
+   ;;; expressions to indent functions, as Edwin has.  But this is
+   ;;; expedient for now.
+
+   (collect-average 'with-...)
+   (collect-display 'with-...)
+   (collect-list 'with-...)
+   (collect-list! 'with-...)
+   (collect-list-into! 'with-...)
+   (collect-list-reverse 'with-...)
+   (collect-max 'with-...)
+   (collect-min 'with-...)
+   (collect-product 'with-...)
+   (collect-stream 'with-...)
+   (collect-string 'with-...)
+   (collect-string-of-length 'with-...)
+   (collect-sum 'with-...)
+   (collect-vector 'with-...)
+   (collect-vector-of-length 'with-...)
+
+   ;;; This one doesn't follow the same pattern as the others, because
+   ;;; there is no expression; (COLLECT-COUNT ...) is the same as
+   ;;; (COLLECT-SUM ... 1).
+
+   (collect-count 0)
+   ))
 
 (dolist (hint
 	 '((with-test-prefix 1)
@@ -272,42 +325,6 @@
 
 ;;; Nested foof-loop forms
 
-(put 'iterate 'scheme-indent-function 'with-...)
-(put 'iterate! 'scheme-indent-function 'with-...)
-(put 'iterate* 'scheme-indent-function 'with-...)
-(put 'iterate-values 'scheme-indent-function 'with-...)
-(put 'lazy-recur 'scheme-indent-function 'with-...)
-(put 'lazy-recur* 'scheme-indent-function 'with-...)
-(put 'recur 'scheme-indent-function 'with-...)
-(put 'recur* 'scheme-indent-function 'with-...)
-
-;;; This is silly, but so would altering the definition of
-;;; `scheme-indent-function' yet again to include a test for
-;;; `collect-...'.  Better would be to have a table mapping regular
-;;; expressions to indent functions, as Edwin has.  But this is
-;;; expedient for now.
-
-(put 'collect-average 'scheme-indent-function 'with-...)
-(put 'collect-display 'scheme-indent-function 'with-...)
-(put 'collect-list 'scheme-indent-function 'with-...)
-(put 'collect-list! 'scheme-indent-function 'with-...)
-(put 'collect-list-into! 'scheme-indent-function 'with-...)
-(put 'collect-list-reverse 'scheme-indent-function 'with-...)
-(put 'collect-max 'scheme-indent-function 'with-...)
-(put 'collect-min 'scheme-indent-function 'with-...)
-(put 'collect-product 'scheme-indent-function 'with-...)
-(put 'collect-stream 'scheme-indent-function 'with-...)
-(put 'collect-string 'scheme-indent-function 'with-...)
-(put 'collect-string-of-length 'scheme-indent-function 'with-...)
-(put 'collect-sum 'scheme-indent-function 'with-...)
-(put 'collect-vector 'scheme-indent-function 'with-...)
-(put 'collect-vector-of-length 'scheme-indent-function 'with-...)
-
-;;; This one doesn't follow the same pattern as the others, because
-;;; there is no expression; (COLLECT-COUNT ...) is the same as
-;;; (COLLECT-SUM ... 1).
-
-(put 'collect-count 'scheme-indent-function 0)
 
 ;;;; RECEIVE Indentation
 
