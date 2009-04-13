@@ -1,9 +1,9 @@
 #!/usr/bin/env scheme-script
 
 (import (except (rnrs) file-exists? delete-file fold-right)
-        (xitomatl srfi time)
-        (only (spells lists) make-list fold-right)
-        (spells receive)
+        (only (srfi :1 lists) make-list fold-right)
+        (srfi :8 receive)
+        (srfi :19 time)
         (spells tracing)
         (spells pathname)
         (spells filesys)
