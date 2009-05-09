@@ -96,7 +96,7 @@ alias pd='pushd'
 if command -v lesspipe > /dev/null; then
   eval `lesspipe`
 fi
-export LESS="-M"
+export LESS="-MR"
 
 #
 # Key bindings

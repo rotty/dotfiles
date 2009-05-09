@@ -13,6 +13,8 @@ export -TU GUILE_LOAD_PATH guile_load_path
 export -TU PKG_CONFIG_PATH pkg_config_path
 export -TU PYTHONPATH python_path
 export -TU IKARUS_LIBRARY_PATH ikarus_library_path
+export -TU GI_TYPELIB_PATH gi_typelib_path
+export -TU YPSILON_SITELIB ypsilon_sitelib
 
 . ~/etc/sysinfo-common.sh
 
@@ -26,10 +28,12 @@ path=(~/bin ~/$sysdir/bin $path /usr/local/games)
 ld_library_path=(~/$sysdir/lib $ld_library_path)
 #ltdl_library_path=(~/$sysdir/lib $ltdl_library_path)
 guile_load_path=(~/$sysdir/share/guile/site ~/$sysdir/share/guile /usr/local/share/guile/site $guile_load_path)
-pkg_config_path=(~/$sysdir/lib/pkgconfig $pkg_config_path /usr/local/lib/pkgconfig)
+pkg_config_path=(~/$sysdir/lib/pkgconfig ~/$sysdir/share/pkgconfig $pkg_config_path /usr/local/lib/pkgconfig)
 ikarus_library_path=(~/src/spe/targets/ikarus)
+ypsilon_sitelib=(~/src/spe/targets/ypsilon)
+gi_typelib_path=(~/$sysdir/lib/girepository-1.0)
 
-export ACLOCAL_FLAGS="-I /usr/local/share/aclocal $ACLOCAL_FLAGS"
+export ACLOCAL_FLAGS="-I /usr/local/share/aclocal -I $HOME/$sysdir/share/aclocal $ACLOCAL_FLAGS"
 export SCSH_LIB_DIRS=\"$HOME'/$sysdir/lib/scsh/0.6" '$SCSH_LIB_DIRS
 export CHICKEN_REPOSITORY="$HOME/$sysdir/lib/chicken"
 
