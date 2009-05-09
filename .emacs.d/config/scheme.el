@@ -80,17 +80,23 @@
 (defvar scheme-indent-style-alist nil
   "An association list holding the definitions of Scheme indentation styles")
 
-(defun scheme-indent-style (keyword)
+(defun scheme-indent-style-lookup (styles keyword)
   (catch 'found
-    (dolist (style-spec scheme-indent-styles nil)
+    (dolist (style-spec styles nil)
       (cond ((consp style-spec)
-             (if (eq (car style-spec) keyword)
-                 (throw 'found (cadr style-spec))))
+             (let ((match-expr (car style-spec)))
+               (if (or (and (stringp match-expr)
+                            (string-match match-expr (symbol-name keyword)))
+                       (eq match-expr keyword))
+                   (throw 'found (cadr style-spec)))))
             (t
              (let* ((style (cdr (assq style-spec scheme-indent-style-alist)))
-                    (entry (assq keyword style)))
+                    (entry (scheme-indent-style-lookup style keyword)))
                (if entry
-                   (throw 'found (cadr entry)))))))))
+                   (throw 'found entry))))))))
+
+(defun scheme-indent-style (keyword)
+  (scheme-indent-style-lookup scheme-indent-styles keyword))
 
 (defun scheme-add-indent-style (stylename description)
   (let ((existing (assq stylename scheme-indent-style-alist)))
@@ -137,14 +143,14 @@
 
 (scheme-add-indent-style
  'foof-loop
- '((iterate 'with-...)
-   (iterate! 'with-...)
-   (iterate* 'with-...)
-   (iterate-values 'with-...)
-   (lazy-recur 'with-...)
-   (lazy-recur* 'with-...)
-   (recur 'with-...)
-   (recur* 'with-...)
+ '((iterate with-...)
+   (iterate! with-...)
+   (iterate* with-...)
+   (iterate-values with-...)
+   (lazy-recur with-...)
+   (lazy-recur* with-...)
+   (recur with-...)
+   (recur* with-...)
 
    ;;; This is silly, but so would altering the definition of
    ;;; `scheme-indent-function' yet again to include a test for
@@ -152,21 +158,21 @@
    ;;; expressions to indent functions, as Edwin has.  But this is
    ;;; expedient for now.
 
-   (collect-average 'with-...)
-   (collect-display 'with-...)
-   (collect-list 'with-...)
-   (collect-list! 'with-...)
-   (collect-list-into! 'with-...)
-   (collect-list-reverse 'with-...)
-   (collect-max 'with-...)
-   (collect-min 'with-...)
-   (collect-product 'with-...)
-   (collect-stream 'with-...)
-   (collect-string 'with-...)
-   (collect-string-of-length 'with-...)
-   (collect-sum 'with-...)
-   (collect-vector 'with-...)
-   (collect-vector-of-length 'with-...)
+   (collect-average with-...)
+   (collect-display with-...)
+   (collect-list with-...)
+   (collect-list! with-...)
+   (collect-list-into! with-...)
+   (collect-list-reverse with-...)
+   (collect-max with-...)
+   (collect-min with-...)
+   (collect-product with-...)
+   (collect-stream with-...)
+   (collect-string with-...)
+   (collect-string-of-length with-...)
+   (collect-sum with-...)
+   (collect-vector with-...)
+   (collect-vector-of-length with-...)
 
    ;;; This one doesn't follow the same pattern as the others, because
    ;;; there is no expression; (COLLECT-COUNT ...) is the same as
@@ -174,6 +180,12 @@
 
    (collect-count 0)
    ))
+
+(scheme-add-indent-style
+ 'parscheme
+ '((parser:map 1)
+   ("^parser:.*:repeated-until$" 1)
+   (*parser with-...)))
 
 (dolist (hint
 	 '((with-test-prefix 1)

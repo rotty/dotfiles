@@ -1,6 +1,8 @@
 #!/bin/sh
 
-exec emacs --eval '(setq custom-file "~/.emacs.d/custom/erc.el")' \
+export EMACS_CUSTOM_FILE="$HOME/.emacs.d/custom/erc.el"
+
+exec emacs \
     --no-desktop \
     --load ~/.emacs.d/private/irc.el \
     --funcall irc "$@"

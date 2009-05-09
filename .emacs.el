@@ -67,6 +67,9 @@
 ;; VC is mostly useless for modern DVCSs
 (setq vc-handled-backends nil)
 
+;; w3m-emacs's default keybinding is *horrible*
+(setq w3m-key-binding 'info)
+
 ;; X11 clipboard interaction (http://www.emacswiki.org/emacs/CopyAndPaste)
 ;; (setq x-select-enable-primary t)
 ;; (setq x-select-enable-clipboard nil)
