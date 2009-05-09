@@ -1,6 +1,6 @@
 !
 ! Emacs
-!
+
 Emacs.font:	Dejavu Sans Mono-9
 Emacs.FontBackend: xft
 
@@ -10,6 +10,7 @@ Emacs.FontBackend: xft
 xterm*font: 	 -jmk-neep alt-medium-r-*-*-*-120-*-*-*-*-iso8859-15
 xterm*foreground: black
 xterm*background: white
+XTerm.VT100.eightBitInput: false
 
 !
 ! rxvt-unicode

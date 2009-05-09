@@ -1,7 +1,12 @@
 #!/bin/zsh
 
-xset dpms 240 600 1200
-#xmodmap ~/.xmodmap-`uname -n`
+if [ -f ~/.fehbg ]; then
+    eval `cat ~/.fehbg`
+fi
+
+#xset dpms 240 600 1200
+xmodmap ~/.xmodmap-`uname -n`
+setxkbmap -option ctrl:nocaps
 
 #export GDK_USE_XFT=1 # GTK+ font antialiasing
 
@@ -9,6 +14,7 @@ if [ -z `pidof irexec` ] && command -v irexec; then
     irexec --daemon
     irxevent &
 fi
+
 
 #ssh-add
 
@@ -18,7 +24,6 @@ if [ -f ~/.xsession-local ]; then
   . ~/.xsession-local
 fi
 
-xmodmap -e "add mod5 = Menu"
+gnome-settings-daemon &
 
-exec gnome-session
-
+exec awesome
