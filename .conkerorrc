@@ -1,0 +1,29 @@
+// -*- Mode: js2; -*-
+
+// Some prefs
+url_completion_use_history = true;
+url_remoting_fn = load_url_in_new_buffer;
+can_kill_last_buffer = false;
+
+define_key(default_global_keymap, "C-x C-m", "execute-extended-command");
+
+define_webjump("hub", "http://github.com/search?q=%s");
+define_webjump("wikipedia", "http://www.google.com/search?q=wikipedia+%s&btnI=I'm Feeling Lucky");
+define_webjump("codesearch", "http://www.google.com/codesearch?q=%s");
+define_webjump("plt", "file:///usr/share/plt/doc/search/index.html?q=%s");
+
+define_delicious_webjumps ("rotty");
+
+interactive("fill-domain", "Fill the minibuffer with the current domain.",
+  function (I) {
+	      var field = I.minibuffer.input_element;
+	      var paths = String(I.window.content.location).split('/');
+	      var domain = paths[0] + "/" + paths[1] + "/" + paths[2] + "/";
+	      field.value = domain;
+});
+define_key(minibuffer_keymap, "C-/", "fill-domain");
+
+user_pref("extensions.checkCompatibility", false);
+
+require("session.js");
+session_auto_save_mode(true);
