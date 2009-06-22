@@ -50,6 +50,11 @@ fi
 
 
 #
+# KeyChain
+#
+eval `keychain --eval id_rsa`
+
+#
 # Prompt
 #
 autoload colors
