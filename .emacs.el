@@ -246,10 +246,10 @@ symbols (converted to as string, which is suffixed with \".el\")."
 (dolist (snippet config-snippets)
   (dolist (dir config-snippet-path)
     (let ((file-name (expand-file-name (concat dir (if (symbolp snippet)
-						       (concat (symbol-name snippet) ".el")
+						       (concat "cfgsnippet-" (symbol-name snippet) ".el")
 						     snippet)))))
       (if (file-readable-p file-name)
-	  (load-file file-name)
+          (load-file file-name)
 	(message "Config snippet not found: %s" snippet)))))
 
 
