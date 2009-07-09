@@ -6,11 +6,14 @@ require("beautiful")
 require("naughty")
 -- Widget library
 require("wicked")
+-- Networked REPL
+require("awful.remote")
 
 -- {{{ Variable definitions
 -- This is used later as the default terminal and editor to run.
 terminal = "x-terminal-emulator"
 editor = "ec"
+grace_time = 5 -- seconds
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -20,17 +23,16 @@ editor = "ec"
 modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
-layouts =
-{
+layouts = {
     awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom,
-    awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
-    awful.layout.suit.fair.horizontal,
+--    awful.layout.suit.tile.left,
+--    awful.layout.suit.tile.bottom,
+--    awful.layout.suit.tile.top,
+--    awful.layout.suit.fair,
+--    awful.layout.suit.fair.horizontal,
     awful.layout.suit.max,
-    awful.layout.suit.max.fullscreen,
-    awful.layout.suit.magnifier,
+--    awful.layout.suit.max.fullscreen,
+--    awful.layout.suit.magnifier,
     awful.layout.suit.floating
 }
 
@@ -38,8 +40,7 @@ layouts =
 -- the application class or instance. The instance is useful when running
 -- a console app in a terminal like (Music on Console)
 --    xterm -name mocp -e mocp
-floatapps =
-{
+floatapps = {
     -- by class
     ["MPlayer"] = true,
     ["pinentry"] = true,
@@ -48,11 +49,14 @@ floatapps =
     ["mocp"] = true
 }
 
+slaveapps = {
+    ["x-terminal-emulator"] = true
+}
+
 -- Applications to be moved to a pre-defined tag by class or instance.
 -- Use the screen and tags indices.
-apptags =
-{
-    -- ["Firefox"] = { screen = 1, tag = 2 },
+apptags = {
+    ["Iceweasel"] = { screen = 1, tag = 2 }
     -- ["mocp"] = { screen = 2, tag = 4 },
 }
 
@@ -60,7 +64,29 @@ apptags =
 use_titlebar = false
 -- }}}
 
+function graceful_quit()
+    for k, c in ipairs(client.get()) do
+        c:kill()
+    end
+    -- local time_left = grace_time
+    -- local sleep_quantum = 0.2
+    -- while time_left > 0 do
+    --     if # client.get() > 0 then
+    --         os.execute(string.format("sleep %g", sleep_quantum))
+    --         time_left = time_left - sleep_quantum
+    --     else
+    --         break
+    --     end
+    -- end
+    
+    -- give the frigging firefox some time to shut down
+    os.execute(string.format("sleep %g", sleep_quantum))
+    
+    awesome.quit()
+end
+
 -- {{{ Tags
+
 -- Define tags table.
 tags = {}
 for s = 1, screen.count() do
@@ -76,9 +102,11 @@ for s = 1, screen.count() do
     -- I'm sure you want to see at least one tag.
     tags[s][1].selected = true
 end
+
 -- }}}
 
 -- {{{ Wibox
+
 -- Create a textbox widget
 mytextbox = widget({ type = "textbox", align = "right" })
 -- Set the default text in textbox
@@ -121,9 +149,9 @@ theme_menu()
 myawesomemenu = {
    { "manual", terminal .. " -e man awesome" },
    { "edit config", editor .. " " .. awful.util.getdir("config") .. "/rc.lua" },
-#   { "themes", mythememenu },
+--   { "themes", mythememenu },
    { "restart", awesome.restart },
-   { "quit", awesome.quit }
+   { "quit", graceful_quit }
 }
 
 mymainmenu = awful.menu.new({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
@@ -243,11 +271,13 @@ for s = 1, screen.count() do
                            mypromptbox[s],
                            membarwidget,
                            cpugraphwidget,
-                           mytextbox,
+    
+                       mytextbox,
                            mylayoutbox[s],
                            s == 1 and mysystray or nil }
     mywibox[s].screen = s
 end
+
 -- }}}
 
 -- {{{ Mouse bindings
@@ -293,7 +323,8 @@ globalkeys =
     -- Standard program
     key({ modkey, "Shift"   }, "Return", function () awful.util.spawn(terminal) end),
     key({ modkey, "Control" }, "r", awesome.restart),
-    key({ modkey, "Shift"   }, "q", awesome.quit),
+    key({ modkey, "Shift"   }, "q", graceful_quit),
+    key({ modkey, "Control", "Shift" }, "q", awesome.quit),
 
     key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)    end),
     key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)    end),
@@ -429,6 +460,19 @@ awful.hooks.mouse_enter.register(function (c)
     end
 end)
 
+
+function find_client(table, c)
+    local byclass = table[c.class]
+    if byclass ~= nil then
+        return byclass
+    end
+    local byinstance = table[c.instance]
+    if byinstance ~= nil then
+        return byinstance
+    end
+    return nil
+end
+
 -- Hook function to execute when a new client appears.
 awful.hooks.manage.register(function (c, startup)
     -- If we are not managing this application at startup,
@@ -453,36 +497,35 @@ awful.hooks.manage.register(function (c, startup)
     c.border_width = beautiful.border_width
     c.border_color = beautiful.border_normal
 
-    -- Check if the application should be floating.
     local cls = c.class
     local inst = c.instance
-    if floatapps[cls] then
-        awful.client.floating.set(c, floatapps[cls])
-    elseif floatapps[inst] then
-        awful.client.floating.set(c, floatapps[inst])
+    
+    -- Check if the application should be floating.
+    local floating = find_client(floatapps, c)
+    if floating ~= nil then
+        awful.client.floating.set(c, floating)
     end
-
+    
+    -- Set the windows at the slave,
+    -- i.e. put it at the end of others instead of setting it master.
+    local slave = find_client(slaveapps, c)
+    if slave then
+        awful.client.setslave(c)
+    end
+    
     -- Check application->screen/tag mappings.
-    local target
-    if apptags[cls] then
-        target = apptags[cls]
-    elseif apptags[inst] then
-        target = apptags[inst]
-    end
-    if target then
+    local target = find_client(apptags, c)
+    if target ~= nil then
         c.screen = target.screen
         awful.client.movetotag(tags[target.screen][target.tag], c)
     end
-
-    -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
+    
+    -- Do this after tag mapping, so you don't see it on the wrong tag
+    -- for a split second.
     client.focus = c
 
     -- Set key bindings
     c:keys(clientkeys)
-
-    -- Set the windows at the slave,
-    -- i.e. put it at the end of others instead of setting it master.
-    -- awful.client.setslave(c)
 
     -- Honor size hints: if you want to drop the gaps between windows, set this to false.
     -- c.size_hints_honor = false
