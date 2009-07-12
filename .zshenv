@@ -15,6 +15,8 @@ export -TU PYTHONPATH python_path
 export -TU IKARUS_LIBRARY_PATH ikarus_library_path
 export -TU GI_TYPELIB_PATH gi_typelib_path
 export -TU YPSILON_SITELIB ypsilon_sitelib
+export -TU PLTCOLLECTS pltcollects
+export -TU XDG_DATA_DIRS xdg_data_dirs
 
 . ~/etc/sysinfo-common.sh
 
@@ -29,9 +31,11 @@ ld_library_path=(~/$sysdir/lib $ld_library_path)
 #ltdl_library_path=(~/$sysdir/lib $ltdl_library_path)
 guile_load_path=(~/$sysdir/share/guile/site ~/$sysdir/share/guile /usr/local/share/guile/site $guile_load_path)
 pkg_config_path=(~/$sysdir/lib/pkgconfig ~/$sysdir/share/pkgconfig $pkg_config_path /usr/local/lib/pkgconfig)
-ikarus_library_path=(~/src/spe/targets/ikarus)
-ypsilon_sitelib=(~/src/spe/targets/ypsilon)
+ikarus_library_path=(~/src/spe/r6rs-libs)
+ypsilon_sitelib=(~/src/spe/r6rs-libs)
 gi_typelib_path=(~/$sysdir/lib/girepository-1.0)
+pltcollects=("" ~/src/spe/r6rs-libs)
+xdg_data_dirs=(~/$sysdir/share /usr/share)
 
 export ACLOCAL_FLAGS="-I /usr/local/share/aclocal -I $HOME/$sysdir/share/aclocal $ACLOCAL_FLAGS"
 export SCSH_LIB_DIRS=\"$HOME'/$sysdir/lib/scsh/0.6" '$SCSH_LIB_DIRS
@@ -50,8 +54,6 @@ if [ -f /etc/locale.gen ] && grep -q ^de_AT.UTF-8 /etc/locale.gen; then
 fi
 export PYTHONSTARTUP="$HOME/.pythonrc"
 export PYTHONDOCS="/usr/share/doc/python2.2-doc/html"
-export PLTCOLLECTS="$PLTCOLLECTS:$HOME/src/spe/targets/mzscheme"
-export XDG_DATA_DIRS="$HOME/$sysdir/share:/usr/share"
 
 # Personal info
 

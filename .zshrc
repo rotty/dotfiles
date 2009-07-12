@@ -52,7 +52,9 @@ fi
 #
 # KeyChain
 #
-eval `keychain --eval id_rsa`
+if command -v keychain > /dev/null; then
+    eval `keychain --eval id_rsa`
+fi
 
 #
 # Prompt
