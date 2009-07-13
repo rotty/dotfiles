@@ -24,6 +24,9 @@ if [ -f ~/.xsession-local ]; then
   . ~/.xsession-local
 fi
 
-gnome-settings-daemon &
-
-exec awesome
+if command -v awesome > /dev/null; then
+    gnome-settings-daemon &
+    exec awesome
+else
+    exec gnome-session
+fi
