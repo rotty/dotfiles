@@ -1,4 +1,4 @@
---type-add=scheme=.sch,.sls,.sps,.ss
+--type-add=scheme=.sch,.sls,.sps,.ss,.sls.in,.scm.in
 --type-set=sls=.sls
 --type-set=cheader=.h
 --ignore-dir=.svn-checkout
