@@ -2,14 +2,17 @@
 
 (require 'cl)
 
-;;; Quack-el (extended Scheme support, http://www.neilvandyke.org/quack/)
-(require 'quack)
+;;; Derick's scheme.el
+(require 'scheme)
 
 ;; bracketphobia, http://www.emacswiki.org/cgi-bin/wiki/bracketphobia.el
 (require 'bracketphobia)
 
-(autoload 'run-scheme "cmuscheme48" "Run an inferior Scheme48 process." t)
-(setq scheme-program-name "scheme48")
+(autoload 'inferior-scheme "inferior-scheme" "Run an inferior Scheme process." t)
+(setq inferior-scheme-command-line "ikarus -d")
+
+(setq ikarus-program-arguments '("--r6rs-script"))
+
 (dolist (elt '(("\\.sls$" . scheme-mode)
 	       ("\\.sps$" . scheme-mode)))
   (add-to-list 'auto-mode-alist elt))
@@ -37,20 +40,21 @@
 (dolist (hook '(emacs-lisp-mode-hook lisp-mode-hook scheme-mode-hook))
   (add-hook hook 'my-lispy-mode-hook))
 
-
-;; ikarus-script
-(add-hook 'scheme-mode-hook 'ikarus-script-setup-buffer)
+;; Disable quack (from emacs-goodies-el)
+(remove-hook 'scheme-mode-hook 'quack-scheme-mode-hookfunc)
 
+
+;; ikarus.el
 (eval-after-load 'scheme
   '(progn
-     (define-key scheme-mode-map (kbd "C-c i") 'ikarus-run-script)
-     (define-key scheme-mode-map (kbd "C-c r") 'ikarus-rerun-script)))
+     (define-key scheme-mode-map (kbd "C-c i") 'ikarus-run)
+     (define-key scheme-mode-map (kbd "C-c r") 'ikarus-rerun)))
 
 
 ;; scheme-complete
-(autoload 'scheme-smart-complete "scheme-complete" nil t)
-(autoload 'scheme-complete-or-indent "scheme-complete" nil t)
-(autoload 'scheme-get-current-symbol-info "scheme-complete" nil t)
+;;(autoload 'scheme-smart-complete "scheme-complete" nil t)
+;;(autoload 'scheme-complete-or-indent "scheme-complete" nil t)
+;;(autoload 'scheme-get-current-symbol-info "scheme-complete" nil t)
 
 ;; (eval-after-load 'scheme
 ;;   '(progn (define-key scheme-mode-map "\t" 'scheme-complete-or-indent)))
@@ -69,52 +73,15 @@
              (and (listp v)
                   (every #'symbolp v)))))
 
-(setq quack-pltish-keywords-to-fontify
-      '("and" "begin" "call-with-current-continuation" "call-with-input-file" "call-with-output-file" "call/cc" "case" "case-lambda" "compound-unit/sig" "cond" "condition" "cond-expand" "define" "define/optional" "define-condition-type" "define-macro" "define-module" "define-public" "define-signature" "define-syntax" "define-syntax-set" "define-values" "define-values/invoke-unit/sig" "define-method" "define-generic" "define-class" "delay" "do" "else" "exit-handler" "guard" "if" "import" "lambda" "let" "let*" "let*-values" "let+" "let-keywords" "let-optional" "let-syntax" "let-values" "let/ec" "letrec" "letrec-values" "letrec-syntax" "library" "match-lambda" "match-lambda*" "match-let" "match-let*" "match-letrec" "match-define" "mixin" "opt-lambda" "or" "override" "override*" "namespace-variable-bind/invoke-unit/sig" "parameterize" "private" "private*" "protect" "provide" "provide-signature-elements" "provide/contract" "public" "public*" "quote" "receive" "rename" "require" "require-for-syntax" "send" "send*" "setter" "set!" "set!-values" "signature->symbols" "super-instantiate" "syntax-case" "syntax-case*" "syntax-error" "syntax-rules" "unit/sig" "unless" "when" "with-handlers" "with-method" "with-syntax"))
-
 
 
-(defvar scheme-indent-styles nil
-  "A list of currently active indentation styles for Scheme")
-
-(defvar scheme-indent-style-alist nil
-  "An association list holding the definitions of Scheme indentation styles")
-
-(defun scheme-indent-style-lookup (styles keyword)
-  (catch 'found
-    (dolist (style-spec styles nil)
-      (cond ((consp style-spec)
-             (let ((match-expr (car style-spec)))
-               (if (or (and (stringp match-expr)
-                            (string-match match-expr (symbol-name keyword)))
-                       (eq match-expr keyword))
-                   (throw 'found (cadr style-spec)))))
-            (t
-             (let* ((style (cdr (assq style-spec scheme-indent-style-alist)))
-                    (entry (scheme-indent-style-lookup style keyword)))
-               (if entry
-                   (throw 'found entry))))))))
-
-(defun scheme-indent-style (keyword)
-  (scheme-indent-style-lookup scheme-indent-styles keyword))
-
-(defun scheme-add-indent-style (stylename description)
-  (let ((existing (assq stylename scheme-indent-style-alist)))
-    (if existing
-        (setcdr existing description)
-      (setq scheme-indent-style-alist (cons (cons stylename description)
-                                            scheme-indent-style-alist)))))
-
-(defun scheme-indent-styles-safe-p (value)
-  (and (listp value)
-       (every #'(lambda (elt)
-                  (or (symbolp elt)
-                      (and (consp elt)
-                           (symbolp (car elt))
-                           (integerp (cadr elt)))))
-              value)))
-
-(put 'scheme-indent-styles 'safe-local-variable 'scheme-indent-styles-safe-p)
+(scheme-set-indent-form-names 
+ '((scheme-indent-defform "define-.*")
+   (scheme-indent-withform "with-.*")
+   (1 "parameterize")
+   (2 "trace-lambda")
+   (scheme-let-indent "and-let\\*\\|let-optionals\\*?")
+   (scheme-indent-receive "receive")))
 
 (scheme-add-indent-style 
  'testeez
@@ -129,12 +96,14 @@
  'trc-testing
  '((test-eq 1)
    (test-equal 1)
-   (test-equiv 1)))
+   (test-eqv 1)
+   (test-compare 2)))
 
 (scheme-add-indent-style
  'sbank
  '((let-attributes 3)
-   (let-accessors 2)))
+   (let-accessors 2)
+   (send 1)))
 
 (scheme-add-indent-style
  'conjure-dsl
@@ -143,7 +112,8 @@
 
 (scheme-add-indent-style
  'foof-loop
- '((iterate with-...)
+ '((loop scheme-let-indent)
+   (iterate with-...)
    (iterate! with-...)
    (iterate* with-...)
    (iterate-values with-...)
@@ -184,8 +154,9 @@
 (scheme-add-indent-style
  'parscheme
  '((parser:map 1)
+   ("^parser:\\(optional\\|repeated\\)$" 1)
    ("^parser:.*:repeated-until$" 1)
-   (*parser with-...)))
+   (*parser scheme-indent-withform)))
 
 (dolist (hint
 	 '((with-test-prefix 1)
@@ -234,61 +205,8 @@
            (fmt-let 2)))
   (put (car hint) 'scheme-indent-function (cadr hint)))
 
-(require 'ikarus-script)
+(require 'ikarus)
 
-(eval-after-load "scheme" '(progn
-
-;;; This is a *slightly* modified version of what is in scheme.el,
-;;; which is itself a slight modification of `lisp-indent-function'
-;;; from lisp-mode.el.  Gee, you'd think that someone would think of
-;;; the notion of 'abstraction' here...
-
-(defun scheme-indent-function (indent-point state)
-  (let ((normal-indent (current-column)))
-    (goto-char (1+ (elt state 1)))
-    (parse-partial-sexp (point) calculate-lisp-indent-last-sexp 0 t)
-    (if (and (elt state 2)
-             (not (looking-at "\\sw\\|\\s_")))
-        ;; car of form doesn't seem to be a symbol
-        (progn
-          (if (not (> (save-excursion (forward-line 1) (point))
-                      calculate-lisp-indent-last-sexp))
-              (progn (goto-char calculate-lisp-indent-last-sexp)
-                     (beginning-of-line)
-                     (parse-partial-sexp (point)
-                                         calculate-lisp-indent-last-sexp 0 t)))
-          ;; Indent under the list or under the first sexp on the same
-          ;; line as calculate-lisp-indent-last-sexp.  Note that first
-          ;; thing on that line has to be complete sexp since we are
-          ;; inside the innermost containing sexp.
-          (backward-prefix-chars)
-          (current-column))
-      (let ((function (downcase         ;** downcasage added by TRC
-                       (buffer-substring (point)
-                                         (progn (forward-sexp 1) (point)))))
-            method)
-        (setq method (or (scheme-indent-style (intern function))
-                         (get (intern-soft function) 'scheme-indent-function)
-                         (get (intern-soft function) 'scheme-indent-hook)))
-        (cond ((or (eq method 'defun)
-                   (and (null method)
-                        (> (length function) 3)
-                        (string-match "\\`def" function)))
-               (lisp-indent-defform state indent-point))
-              ;** WITH-... & CALL-WITH-... forms added by TRC
-              ((or (eq method 'with-...)
-                   (eq method 'call-with-...)
-                   (and (null method)
-                        (or (and (> (length function) 5)
-                                 (string-match "\\`with-" function))
-                            (and (> (length function) 9)
-                                 (string-match "\\`call-with-" function)))))
-               (lisp-indent-withform state indent-point))
-              ((integerp method)
-               (lisp-indent-specform method state
-                                     indent-point normal-indent))
-              (method
-               (funcall method state indent-point normal-indent)))))))
 
 ;;; This could be generalized to negative special form indent methods; e.g.,
 ;;;
@@ -306,13 +224,13 @@
 ;;; That is, the last two subforms would be indented two spaces, whereas all
 ;;; preceding subforms would get four spaces.
 
-(defun lisp-indent-withform (state indent-point)
+(defun scheme-indent-withform (state indent-point normal-indent)
   (if (not (and (boundp 'paredit-mode)
                 paredit-mode))
       ;; If we're not in paredit mode, it's not really safe to go backwards
       ;; from the end and to try to indent based on that, since there may not
       ;; be an end to work backwards from (i.e. the structure not be valid).
-      (lisp-indent-defform state indent-point)
+      (scheme-indent-defform state indent-point normal-indent)
     (goto-char (nth 1 state))
     (let ((body-column (+ (current-column)
                           lisp-body-indent)))
@@ -370,4 +288,3 @@
 
 (put 'receive 'scheme-indent-function 'scheme-indent-receive)
 
-))        ; end of eval-after-load for scheme.el
