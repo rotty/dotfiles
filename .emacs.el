@@ -137,7 +137,7 @@
 (mouse-sel-mode 1)
 
 (defvar user-temporary-file-directory
-  (concat temporary-file-directory user-login-name "/"))
+  (concat (expand-file-name "~/.emacs.d/backups") "/"))
 (make-directory user-temporary-file-directory t)
 (setq backup-by-copying t)
 (setq backup-directory-alist
@@ -147,6 +147,9 @@
       (concat user-temporary-file-directory ".auto-saves-"))
 (setq auto-save-file-name-transforms
       `((".*" ,user-temporary-file-directory t)))
+(setq version-control t)
+(setq kept-new-versions 64)
+(setq kept-old-versions 64)
 
 ;; support for starting gnus as a server
 (require 'server)
@@ -252,12 +255,6 @@ symbols (converted to as string, which is suffixed with \".el\")."
           (load-file file-name)
 	(message "Config snippet not found: %s" snippet)))))
 
-
-;; Workaround for emacs22, see
-;; http://groups.google.com/group/gnu.emacs.help/msg/d6237fdac86a7634
-(provide 'sb-info)
-
-
 (defun new-term ()
   (interactive)
   (term "/bin/zsh")
@@ -325,8 +322,30 @@ to consider it or not when called with that buffer current."
 	     revert-some-buffers-action-alist))
       (or queried (> files-done 0)
 	  (message "(No files need reverting)")))))
+
+;; Quit emacs non-interactively, but still try to save everything
+(defun rotty/quit-emacs ()
+  ;;  save all file-visiting buffers
+  (save-some-buffers t)
+  ;; Shutdown gnus, if running
+  (when (boundp 'gnus-group-buffer)
+    ;; Taken from `gnus-group-exit', and modified to ensure
+    ;; non-interactivity
+    (gnus-run-hooks 'gnus-exit-gnus-hook)
+    (gnus-save-newsrc-file)
+    (gnus-close-backends)
+    (gnus-clear-system)
+    (gnus-run-hooks 'gnus-after-exiting-gnus-hook))
+  ;; Kill all server clients
+  (while server-clients
+    (server-delete-client (car server-clients)))
+  ;; Die!
+  (let ((desktop-save t))
+    (kill-emacs)))
+
 
 
+;; 
 ;; Enable desktop saving on exit; also loads the desktop on startup, so goes last
 (desktop-save-mode 1)
 
